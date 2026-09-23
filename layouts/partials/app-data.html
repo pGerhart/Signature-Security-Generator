@@ -1,0 +1,8 @@
+{{- $data := dict
+  "goals"       site.Data.goals
+  "models"      site.Data.models
+  "notation"    site.Data.notation
+  "modelfigure" site.Data.modelfigure
+  "relations"   site.Data.relations
+-}}
+<script id="app-data" type="application/json">{{ $data | jsonify | safeJS }}</script>

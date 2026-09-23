@@ -1,0 +1,103 @@
+classicalModels:
+  - key: koa
+    acronym: KOA
+    short: koa
+    label: Key Only Attack
+    definition: 'Adversary $\mathcal{A}$ has access to the public key $\mathsf{pk}$.'
+    figureDetail: 'No active message attack is shown.'
+  - key: kma
+    acronym: KMA
+    short: kma
+    label: Known Message Attack
+    definition: 'Adversary $\mathcal{A}$ obtains $q$ message signature pairs $(m_i,\sigma_i)$, with (uniformly) randomly sampled $m_i \gets_\$ \mathcal{D}_M$ for $1 \leq i \leq q$.'
+    figureDetail: 'The adversary only sees signatures on sampled messages.'
+  - key: gcma
+    acronym: gCMA
+    short: gcma
+    label: Generic Chosen Message Attack
+    definition: 'Adversary $\mathcal{A}$ chooses a set of messages *before* accessing $\mathsf{pk}$ and before accessing the signatures.'
+    figureDetail: 'The adversary fixes a set of messages in advance, before seeing the public key.'
+  - key: dcma
+    acronym: dCMA
+    short: dcma
+    label: Direct Chosen Message Attack
+    definition: 'Adversary $\mathcal{A}$ chooses a set of messages *after* accessing $\mathsf{pk}$ and before accessing the signatures.'
+    figureDetail: 'The adversary fixes a set of messages after seeing the public key.'
+  - key: acma
+    acronym: aCMA
+    short: acma
+    label: Adaptive Chosen Message Attack
+    definition: '$\mathcal{A}$ can repeatedly access a signature oracle for adaptively chosen messages. In particular, $\mathcal{A}$ knows all queued message signature pairs and $\mathsf{pk}$ during this process.'
+    figureDetail: 'The adversary can choose messages adaptively.'
+
+messageChoices:
+  - key: ko
+    acronym: KO
+    short: ko
+    label: No Message Choice
+    definition: 'Adversary $\mathcal{A}$ has access to the public key $\mathsf{pk}$.'
+    figureDetail: 'No active message attack is shown.'
+  - key: km
+    acronym: KMA
+    short: km
+    label: Known Message Sampling
+    definition: 'Adversary $\mathcal{A}$ obtains $q$ message signature pairs $(m_i,\sigma_i)$, with (uniformly) randomly sampled $m_i \gets_\$ \mathcal{D}_M$ for $1 \leq i \leq q$.'
+    figureDetail: 'The adversary receives sampled messages.'
+  - key: gcm
+    acronym: gCMA
+    short: gcm
+    label: Generic Chosen Message
+    definition: 'Adversary $\mathcal{A}$ chooses a set of messages *before* accessing $\mathsf{pk}$ and before accessing the signatures.'
+    figureDetail: 'The adversary fixes a set of messages in advance, before seeing the public key.'
+  - key: dcm
+    acronym: dCMA
+    short: dcm
+    label: Direct Chosen Message
+    definition: 'Adversary $\mathcal{A}$ chooses a set of messages *after* accessing $\mathsf{pk}$ and before accessing the signatures.'
+    figureDetail: 'The adversary fixes a set of messages after seeing the public key.'
+  - key: acm
+    acronym: aCMA
+    short: acm
+    label: Adaptive Chosen Message
+    definition: '$\mathcal{A}$ can repeatedly access a signature oracle for adaptively chosen messages. In particular, $\mathcal{A}$ knows all queued message signature pairs and $\mathsf{pk}$ during this process.'
+    figureDetail: 'The adversary can choose messages adaptively.'
+
+randomnessChoices:
+  - key: ko
+    acronym: KO
+    short: ko
+    label: No Randomness Choice
+    definition: 'No active randomness attack is shown.'
+    figureDetail: 'No active randomness attack is shown.'
+  - key: kr
+    acronym: KRA
+    short: kr
+    label: Known Randomness Sampling
+    definition: 'The adversary receives sampled randomness values.'
+    figureDetail: 'The adversary receives sampled randomness values.'
+  - key: gcr
+    acronym: gCRA
+    short: gcr
+    label: Generic Chosen Randomness
+    definition: 'The adversary fixes a set of randomness values in advance, before seeing the public key.'
+    figureDetail: 'The adversary fixes a set of randomness values in advance, before seeing the public key.'
+  - key: dcr
+    acronym: dCRA
+    short: dcr
+    label: Direct Chosen Randomness
+    definition: 'The adversary fixes a set of randomness values after seeing the public key.'
+    figureDetail: 'The adversary fixes a set of randomness values after seeing the public key.'
+  - key: acr
+    acronym: aCRA
+    short: acr
+    label: Adaptive Chosen Randomness
+    definition: 'The adversary can choose randomness adaptively.'
+    figureDetail: 'The adversary can choose randomness adaptively.'
+
+leakage:
+  control: leakageToggle
+  label: 'Include Leakage Function'
+  tex: 'L_{\mathsf{tsk}}^{m,\sigma}'
+  definition: 'Key exposure is a form of key leakage that assumes full leakage of the temporary key $\mathsf{tsk}$ during the computation of $\mathsf{DetComp}$.'
+  figureDetail: 'The adversary may query an arbitrary leakage function on the temporary signing key.'
+  figureDetailUke: 'The adversary gets access to temporary key material.'

@@ -1,0 +1,88 @@
+:root {
+  color-scheme: light;
+
+  --bg: #f6f8fc;
+  --surface: #ffffff;
+  --surface-2: #f8fafd;
+  --surface-3: #eef2f8;
+  --ink: #101828;
+  --ink-2: #4d5a70;
+  --ink-3: #67718a;
+  --line: #e6eaf1;
+  --line-2: #d5dce7;
+
+  --accent: #008ffb;
+  --accent-ink: #0062b3;
+  --tab-bg: #0062b3;
+  --tab-ink: #ffffff;
+  --violet: #775dd0;
+  --teal: #00b782;
+  --amber: #d98600;
+  --red: #ff4560;
+
+  --phase-init: #14532d;
+  --phase-learn: #1e3a8a;
+  --phase-eval: #991b1b;
+
+  --accent-wash: #eaf5ff;
+  --edge-impl: #008ffb;
+  --edge-sep: #ff4560;
+  --edge-wrap: #775dd0;
+
+  --fig-algo: #3475b4;
+  --fig-supply: #2a804e;
+  --fig-attack: #b85063;
+  --fig-flow: #7c8aa0;
+  --fig-surface: #fdfefe;
+
+  --shadow-card: 0 1px 2px rgba(16, 24, 40, .04), 0 10px 28px -18px rgba(16, 24, 40, .35);
+  --shadow-pop: 0 12px 32px -10px rgba(16, 24, 40, .3);
+
+  --sans: var(--font-neo-grotesque);
+  --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+
+  --radius-card: var(--radius-3);
+  --radius-box: calc(var(--radius-3) * .75);
+  --topbar-h: 60px;
+}
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
+
+  --bg: #0d1117;
+  --surface: #151b24;
+  --surface-2: #1b222c;
+  --surface-3: #232b37;
+  --ink: #e8edf5;
+  --ink-2: #a3aec0;
+  --ink-3: #99a5bb;
+  --line: #262e3a;
+  --line-2: #333d4c;
+
+  --accent: #38a9ff;
+  --accent-ink: #9ad2ff;
+  --tab-bg: #38a9ff;
+  --tab-ink: #04121f;
+  --violet: #a48cf0;
+  --teal: #2ee0a8;
+  --amber: #f5b544;
+  --red: #ff6b81;
+
+  --phase-init: #5fd39a;
+  --phase-learn: #8ab6ff;
+  --phase-eval: #ff8f9e;
+
+  --accent-wash: #16283c;
+  --edge-impl: #38bdf8;
+  --edge-sep: #ff6b81;
+  --edge-wrap: #a78bfa;
+
+  --fig-algo: #6aa9e8;
+  --fig-supply: #4fc98a;
+  --fig-attack: #f0899c;
+  --fig-flow: #8b9ab1;
+  --fig-surface: #1a2029;
+
+  --shadow-card: 0 1px 2px rgba(0, 0, 0, .3), 0 12px 30px -18px rgba(0, 0, 0, .8);
+  --shadow-pop: 0 14px 34px -10px rgba(0, 0, 0, .7);
+}

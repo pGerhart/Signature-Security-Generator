@@ -1,0 +1,157 @@
+classicalGoals:
+  - key: ub
+    acronym: UB
+    short: ub
+    label: Unbreakability
+    definition: '$\mathcal{A}$ is not able to compute the secret key $\mathsf{sk}$ of $\Sigma$.'
+  - key: uuf
+    acronym: UUF
+    short: uuf
+    label: Universal Unforgeability
+    definition: 'Adversary $\mathcal{A}$ cannot compute a valid signature for any a priori sampled message $m^* \gets_\$ \mathcal{D}_M$ with $m^* \notin Q$.'
+  - key: wsuf
+    acronym: wSUF
+    short: wsuf
+    label: Weak Selective Unforgeability
+    definition: 'Adversary $\mathcal{A}$ cannot compute a valid signature $\sigma^*$ for a message $m^* \notin Q$ a priori chosen by $\mathcal{A}$ *before* observing $\mathsf{pk}$.'
+  - key: ssuf
+    acronym: sSUF
+    short: ssuf
+    label: Strong Selective Unforgeability
+    definition: 'Adversary $\mathcal{A}$ cannot compute a valid signature $\sigma^*$ for a message $m^* \notin Q$ a priori chosen by $\mathcal{A}$ *after* observing $\mathsf{pk}$.'
+  - key: weuf
+    acronym: wEUF
+    short: weuf
+    label: Weak Existential Unforgeability
+    definition: 'Adversary $\mathcal{A}$ cannot compute a valid message signature pair $(m^*, \sigma^*)$ assuming there exists no $\sigma$ such that $m^* \notin Q$.'
+  - key: seuf
+    acronym: sEUF
+    short: seuf
+    label: Strong Existential Unforgeability
+    definition: 'Adversary $\mathcal{A}$ cannot compute a valid message signature pair $(m^*, \sigma^*)$ with $(m^*, \sigma^*) \notin Q$.'
+
+extendedGoals:
+  - key: ub
+    acronym: UB
+    short: ub
+    label: Unbreakability
+    group: unforgeability
+    definition: '$\mathcal{A}$ is not able to compute the secret key $\mathsf{sk}$ of $\Sigma$.'
+  - key: uuf
+    acronym: UUF
+    short: uuf
+    label: Universal Unforgeability
+    group: unforgeability
+    definition: 'Adversary $\mathcal{A}$ cannot compute a valid signature for any a priori sampled message $m^* \gets_\$ \mathcal{D}_M$ with $m^* \notin Q$.'
+  - key: wsuf
+    acronym: wSUF
+    short: wsuf
+    label: Weak Selective Unforgeability
+    group: unforgeability
+    definition: 'Adversary $\mathcal{A}$ cannot compute a valid signature $\sigma^*$ for a message $m^* \notin Q$ a priori chosen by $\mathcal{A}$ *before* observing $\mathsf{pk}$.'
+  - key: ssuf
+    acronym: sSUF
+    short: ssuf
+    label: Strong Selective Unforgeability
+    group: unforgeability
+    definition: 'Adversary $\mathcal{A}$ cannot compute a valid signature $\sigma^*$ for a message $m^* \notin Q$ a priori chosen by $\mathcal{A}$ *after* observing $\mathsf{pk}$.'
+  - key: weuf
+    acronym: wEUF
+    short: weuf
+    label: Weak Existential Unforgeability
+    group: unforgeability
+    definition: 'Adversary $\mathcal{A}$ cannot compute a valid message signature pair $(m^*, \sigma^*)$ assuming there exists no $\sigma$ such that $m^* \notin Q$.'
+  - key: seuf
+    acronym: sEUF
+    short: seuf
+    label: Strong Existential Unforgeability
+    group: unforgeability
+    definition: 'Adversary $\mathcal{A}$ cannot compute a valid message signature pair $(m^*, \sigma^*)$ with $(m^*, \sigma^*) \notin Q$.'
+  - key: wdeo
+    acronym: wDEO
+    short: wdeo
+    label: Weak Destructive Exclusive Ownership
+    group: ownership
+    definition: 'Adversary $\mathcal{A}$ cannot compute a tuple $(\mathsf{sk}^*, \mathsf{pk}^*, m^*, \sigma^*)$, such that $\mathsf{sk}^*$ and $\mathsf{pk}^*$ match and $(m^*, \sigma^*)$ is valid under $\mathsf{pk}^*$, where $\mathsf{pk} \neq \mathsf{pk}^*$, $\sigma^* \in Q$, and $(m^*, \sigma^*) \notin Q$.'
+  - key: sdeo
+    acronym: sDEO
+    short: sdeo
+    label: Strong Destructive Exclusive Ownership
+    group: ownership
+    definition: 'Adversary $\mathcal{A}$ cannot compute a tuple $(\mathsf{pk}^*, m^*, \sigma^*)$, such that $(m^*, \sigma^*)$ is valid under $\mathsf{pk}^*$, where $\mathsf{pk} \neq \mathsf{pk}^*$, $\sigma^* \in Q$, and $(m^*, \sigma^*) \notin Q$.'
+  - key: wceo
+    acronym: wCEO
+    short: wceo
+    label: Weak Conservative Exclusive Ownership
+    group: ownership
+    definition: 'Adversary $\mathcal{A}$ cannot compute a tuple $(\mathsf{sk}^*, \mathsf{pk}^*, m^*, \sigma^*)$, such that $\mathsf{sk}^*$ and $\mathsf{pk}^*$ match and $(m^*, \sigma^*)$ is valid under $\mathsf{pk}^*$, where $\mathsf{pk} \neq \mathsf{pk}^*$ and $(m^*, \sigma^*) \in Q$.'
+  - key: sceo
+    acronym: sCEO
+    short: sceo
+    label: Strong Conservative Exclusive Ownership
+    group: ownership
+    definition: 'Adversary $\mathcal{A}$ cannot compute a tuple $(\mathsf{pk}^*, m^*, \sigma^*)$, such that $(m^*, \sigma^*)$ is valid under $\mathsf{pk}^*$, where $\mathsf{pk} \neq \mathsf{pk}^*$ and $(m^*, \sigma^*) \in Q$.'
+  - key: wueo
+    acronym: wUEO
+    short: wueo
+    label: Weak Universal Exclusive Ownership
+    group: ownership
+    definition: 'Adversary $\mathcal{A}$ cannot compute a tuple $(\mathsf{sk}^*, \mathsf{pk}^*, m^*, \sigma^*)$, such that $\mathsf{sk}^*$ and $\mathsf{pk}^*$ match and $(m^*, \sigma^*)$ is valid under $\mathsf{pk}^*$, where $\mathsf{pk} \neq \mathsf{pk}^*$ and $\sigma^* \in Q$.'
+  - key: sueo
+    acronym: sUEO
+    short: sueo
+    label: Strong Universal Exclusive Ownership
+    group: ownership
+    definition: 'Adversary $\mathcal{A}$ cannot compute a tuple $(\mathsf{pk}^*, m^*, \sigma^*)$, such that $(m^*, \sigma^*)$ is valid under $\mathsf{pk}^*$, where $\mathsf{pk} \neq \mathsf{pk}^*$ and $\sigma^* \in Q$.'
+  - key: msueo
+    acronym: msUEO
+    short: msueo
+    label: Malicious Strong Universal Exclusive Ownership
+    group: ownership
+    definition: 'Adversary $\mathcal{A}$ cannot compute messages $m^*_1$, $m^*_2$, signature $\sigma^*$, and public keys $\mathsf{pk}^*_1 \neq \mathsf{pk}^*_2$, such that $(m^*_1, \sigma^*)$ is valid under $\mathsf{pk}^*_1$ and $(m^*_2, \sigma^*)$ is valid under $\mathsf{pk}^*_2$.'
+  - key: uke
+    acronym: UKE
+    short: uke
+    label: Key Exposure
+    group: additional
+    definition: 'Key exposure is a form of key leakage that assumes full leakage of the temporary key $\mathsf{tsk}$ during the computation of $\mathsf{DetComp}$.'
+  - key: mb
+    acronym: MB
+    short: mb
+    label: Message Bounding
+    group: additional
+    definition: '$\mathcal{A}$ cannot compute messages $m^*_1 \neq m^*_2$, signature $\sigma^*$, and public key $\mathsf{pk}^*$ (for signature scheme $\Sigma$), such that both $(m^*_1, \sigma^*)$ and $(m^*_2, \sigma^*)$ are valid under $\mathsf{pk}^*$.'
+  - key: nr
+    acronym: NR
+    short: nr
+    label: Non-Resignability
+    group: additional
+    definition: 'Adversary $\mathcal{A}$ cannot compute a signature $\sigma^*$ and a public key $\mathsf{pk}^*$ such that $\mathsf{pk}^* \neq \mathsf{pk}$ and $(m,\sigma^*)$ verifies under $\mathsf{pk}^*$, where $(m,\mathsf{aux})$ is sampled by $\mathcal{D}(\lambda,\mathsf{pk})$, $\sigma$ is a signature for $m$, and the adversary is given $(\mathsf{pk},\sigma,\mathsf{aux})$.'
+
+extendedUnforgeability: [ub, uuf, wsuf, ssuf, weuf, seuf]
+extendedOwnership: [wdeo, sdeo, wceo, sceo, wueo, sueo, msueo]
+extendedAdditional:
+  - key: mb
+    control: extendedMb
+    label: Message Bounding
+  - key: nr
+    control: extendedNr
+    label: Non-Resignability
+  - key: uke
+    control: extendedUke
+    label: Key Exposure
+
+controls:
+  framework: 'Framework'
+  classicalGoal: 'Security goal'
+  classicalModel: 'Adversary model'
+  extendedUnforgeability: 'Unforgeability goal'
+  extendedOwnership: 'Exclusive ownership goal'
+  extendedAdditional: 'Additional goals'
+  messageChoice: 'Message choice'
+  randomnessChoice: 'Randomness choice'
+
+extendedOwnershipNone:
+  key: ''
+  acronym: 'none'
+  label: 'No exclusive ownership goal'

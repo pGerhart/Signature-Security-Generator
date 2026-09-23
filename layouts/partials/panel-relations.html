@@ -1,0 +1,51 @@
+{{- $r := site.Data.relations -}}
+<section class="panel is-hidden" id="panel-relations" role="tabpanel" aria-label="Relations">
+  <article class="card">
+    <div class="card-head">
+      <div>
+        <h2 class="card-title">{{ $r.chainsSection.title }}</h2>
+        <div class="card-note prose" id="relationsIntro"></div>
+      </div>
+      <div class="graph-legend" id="graphLegend"></div>
+    </div>
+
+    <div class="graph-toolbar">
+      <div class="segmented" id="graphModes" role="tablist" aria-label="Layout">
+        <button type="button" class="segment is-active" role="tab" aria-selected="true" data-mode="network" aria-controls="relationsNetwork">Network</button>
+        <button type="button" class="segment" role="tab" aria-selected="false" data-mode="chains" aria-controls="relationsChains">Chain view</button>
+      </div>
+      <div class="graph-find">
+        <label class="visually-hidden" for="notionSearch">Find a notion</label>
+        <input id="notionSearch" class="text-input" list="notionList" placeholder="Find a notion" autocomplete="off" spellcheck="false">
+        <datalist id="notionList"></datalist>
+      </div>
+      <button type="button" class="btn" id="graphReset">Reset view</button>
+    </div>
+
+    <div class="graph-holder">
+      <div class="graph-stage is-network" id="relationsNetwork" role="img" aria-label="{{ $r.chainsSection.title }}"></div>
+      <div class="graph-zoom" id="graphZoom">
+        <button type="button" class="graph-zoom-btn" data-zoom="in" aria-label="Zoom in">+</button>
+        <button type="button" class="graph-zoom-btn" data-zoom="out" aria-label="Zoom out">&minus;</button>
+      </div>
+    </div>
+    <div class="graph-stage is-chains is-hidden" id="relationsChains"></div>
+
+    <nav class="rel-path" id="relationsTrail" aria-label="Visited notions"></nav>
+
+    <div class="rel-steps" id="relationsSteps"></div>
+    <p class="graph-caption prose" id="relationsClosing"></p>
+    <div class="theorem-grid" id="relationsTheorems"></div>
+  </article>
+
+  <article class="card">
+    <h2 class="card-title">{{ $r.selection.title }}</h2>
+    <div id="relationsSelection"></div>
+  </article>
+
+  <article class="card">
+    <h2 class="card-title">{{ $r.beyond.title }}</h2>
+    <div class="card-note prose" id="beyondLead"></div>
+    <div class="theorem-grid" id="beyondTheorems"></div>
+  </article>
+</section>

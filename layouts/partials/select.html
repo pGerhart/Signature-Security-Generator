@@ -1,0 +1,16 @@
+<div class="field">
+  <label class="field-label" for="{{ .id }}">{{ .label }}</label>
+  <div class="select-wrap">
+    <select id="{{ .id }}" class="select-native">
+      {{- with .none }}
+      <option value="{{ .key }}" data-key="{{ .acronym }}" data-name="{{ .label }}">{{ .acronym }} &middot; {{ .label }}</option>
+      {{- end }}
+      {{- range .entries }}
+      <option value="{{ .key }}" data-key="{{ .acronym }}" data-name="{{ .label }}">{{ .acronym }} &middot; {{ .label }}</option>
+      {{- end }}
+    </select>
+    <span class="select-face" id="{{ .id }}-face" aria-hidden="true"></span>
+    <svg class="select-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+  </div>
+  <p class="field-note" id="{{ .id }}-note"></p>
+</div>

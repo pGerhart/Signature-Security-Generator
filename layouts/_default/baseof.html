@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ .Site.Title }}</title>
+  <meta name="description" content="{{ .Site.Params.paperTitle }}">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ctext y='25' x='4' font-size='24' font-family='serif'%3E%CE%A3%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="{{ "vendor/open-props/open-props.min.css" | relURL }}">
+  <link rel="stylesheet" href="{{ "vendor/katex/katex.min.css" | relURL }}">
+  {{ $css := resources.Get "scss/main.scss" | toCSS (dict "transpiler" "libsass" "outputStyle" "compressed") | fingerprint }}
+  <link rel="stylesheet" href="{{ $css.RelPermalink }}">
+  <script>    try {
+      var t = localStorage.getItem('ssg-theme');
+      document.documentElement.dataset.theme = t || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    } catch (e) { document.documentElement.dataset.theme = 'light'; }</script>
+  <script defer src="{{ "vendor/katex/katex.min.js" | relURL }}"></script>
+  <script defer src="{{ "vendor/cytoscape/cytoscape.min.js" | relURL }}"></script>
+  <script defer src="{{ "vendor/prism/prism-core.min.js" | relURL }}"></script>
+  <script defer src="{{ "vendor/prism/prism-latex.min.js" | relURL }}"></script>
+  {{ $js := resources.Get "js/app.js" | js.Build (dict "minify" true "target" "es2018") | fingerprint }}
+  <script defer src="{{ $js.RelPermalink }}"></script>
+</head>
+<body>
+  <a class="skip-link" href="#canvas">Skip to the generator</a>
+  {{ block "main" . }}{{ end }}
+  {{ partial "app-data.html" . }}
+</body>
+</html>

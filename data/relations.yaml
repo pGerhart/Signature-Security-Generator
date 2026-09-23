@@ -1,0 +1,175 @@
+intro:
+  - 'A composed notion is a pair $(\mathsf{sg},\mathsf{am})$ of a security goal $\mathsf{sg}$ and an adversary model $\mathsf{am}=(\mathsf{mc},\mathsf{rc},\mathsf{kc})$ with message choice $\mathsf{mc}$, randomness choice $\mathsf{rc}$, and key exposure $\mathsf{kc}\in\{L_{\mathsf{tsk}},\emptyset\}$.'
+  - 'We write $(\mathsf{sg},\mathsf{am})\rightarrow(\mathsf{sg}'',\mathsf{am}'')$ if every $(\mathsf{sg},\mathsf{am})$-secure scheme is also $(\mathsf{sg}'',\mathsf{am}'')$-secure, and $(\mathsf{sg},\mathsf{am})\not\rightarrow(\mathsf{sg}'',\mathsf{am}'')$ if some scheme separates the two.'
+
+chainsSection:
+  title: 'Attack Vector Relations'
+  lead: 'The trivial implications between the attack vectors are $\mathrm{sEUF} \rightarrow \mathrm{wEUF} \rightarrow \mathrm{sSUF} \rightarrow \mathrm{wSUF} \rightarrow \mathrm{UUF} \rightarrow \mathrm{UB}$, $\mathrm{aCMA} \rightarrow \mathrm{dCMA} \rightarrow \mathrm{gCMA} \rightarrow \mathrm{KMA} \rightarrow \mathrm{KOA}$, $\mathrm{aCRA} \rightarrow \mathrm{dCRA} \rightarrow \mathrm{gCRA} \rightarrow \mathrm{KRA} \rightarrow \mathrm{KOA}$, and $L_{\mathsf{tsk}} \rightarrow \emptyset$.'
+  note: 'These implication chains determine the relations between composed notions:'
+  closing: 'Hence there are no relations between composed notions beyond the trivial ones, and in particular, strengthening one attack vector never compensates for another.'
+
+legend:
+  implication: 'implication'
+  separation: 'separation'
+  wrapper: 'wrapper'
+
+legendTips:
+  implication: 'We write $(\mathsf{sg},\mathsf{am})\rightarrow(\mathsf{sg}'',\mathsf{am}'')$ if every $(\mathsf{sg},\mathsf{am})$-secure scheme is also $(\mathsf{sg}'',\mathsf{am}'')$-secure.'
+  separation: 'We write $(\mathsf{sg},\mathsf{am})\not\rightarrow(\mathsf{sg}'',\mathsf{am}'')$ if some scheme separates the two.'
+
+lanes:
+  - id: goal
+    axis: goal
+    title: 'Security goal'
+    nodes: [seuf, weuf, ssuf, wsuf, uuf, ub]
+    lemma: 'lem:goal-order'
+  - id: message
+    axis: message
+    title: 'Message choice'
+    nodes: [acma, dcma, gcma, kma, koa]
+    lemma: 'lem:model-order'
+  - id: randomness
+    axis: randomness
+    title: 'Randomness choice'
+    nodes: [acra, dcra, gcra, kra, rkoa]
+    lemma: 'lem:model-order'
+  - id: exposure
+    axis: exposure
+    title: 'Key exposure'
+    nodes: [ltsk, empty]
+    lemma: 'lem:goal-order'
+
+nodes:
+  seuf:  {acr: 'sEUF',  label: 'Strong Existential Unforgeability', bind: {classicalGoal: seuf, extendedUnforgeability: seuf}}
+  weuf:  {acr: 'wEUF',  label: 'Weak Existential Unforgeability',   bind: {classicalGoal: weuf, extendedUnforgeability: weuf}}
+  ssuf:  {acr: 'sSUF',  label: 'Strong Selective Unforgeability',   bind: {classicalGoal: ssuf, extendedUnforgeability: ssuf}}
+  wsuf:  {acr: 'wSUF',  label: 'Weak Selective Unforgeability',     bind: {classicalGoal: wsuf, extendedUnforgeability: wsuf}}
+  uuf:   {acr: 'UUF',   label: 'Universal Unforgeability',          bind: {classicalGoal: uuf,  extendedUnforgeability: uuf}}
+  ub:    {acr: 'UB',    label: 'Unbreakability',                    bind: {classicalGoal: ub,   extendedUnforgeability: ub}}
+  acma:  {acr: 'aCMA',  label: 'Adaptive Chosen Message Attack',    bind: {classicalModel: acma, messageChoice: acm}}
+  dcma:  {acr: 'dCMA',  label: 'Direct Chosen Message Attack',      bind: {classicalModel: dcma, messageChoice: dcm}}
+  gcma:  {acr: 'gCMA',  label: 'Generic Chosen Message Attack',     bind: {classicalModel: gcma, messageChoice: gcm}}
+  kma:   {acr: 'KMA',   label: 'Known Message Attack',              bind: {classicalModel: kma,  messageChoice: km}}
+  koa:   {acr: 'KOA',   label: 'Key Only Attack',                   bind: {classicalModel: koa,  messageChoice: ko}}
+  acra:  {acr: 'aCRA',  label: 'Adaptive Chosen Randomness',        bind: {randomnessChoice: acr}}
+  dcra:  {acr: 'dCRA',  label: 'Direct Chosen Randomness',          bind: {randomnessChoice: dcr}}
+  gcra:  {acr: 'gCRA',  label: 'Generic Chosen Randomness',         bind: {randomnessChoice: gcr}}
+  kra:   {acr: 'KRA',   label: 'Known Randomness Sampling',         bind: {randomnessChoice: kr}}
+  rkoa:  {acr: 'KOA',   label: 'No Randomness Choice',              bind: {randomnessChoice: ko}}
+  ltsk:  {acr: 'L', sub: 'tsk', label: 'Include Leakage Function',  bind: {leakage: true}}
+  empty: {acr: '∅', glyph: emptyset, label: 'None',                             bind: {leakage: false}}
+
+wrapperLifts:
+  - lane: randomness
+    from: rkoa
+    to: acra
+    label: 'GenTr'
+  - lane: exposure
+    from: empty
+    to: ltsk
+    label: 'GenTsk'
+
+edges:
+  - from: seuf
+    to: weuf
+    impl: 'A fresh-message forgery $(m^*,\sigma^*)$ with $m^*\notin Q$ satisfies $(m^*,\sigma^*)\notin Q$, hence is a strong forgery.'
+    sep: 'Let $\mathsf{Sign}''(\mathsf{sk},m;r)=(\mathsf{Sign}^\star(\mathsf{sk},m;r),0)$ and let $\mathsf{Vrfy}''$ ignore the appended bit. Flipping the bit of any valid signature breaks $\mathrm{sEUF}$; $\mathrm{wEUF}$ reduces to $\Sigma^\star$.'
+  - from: weuf
+    to: ssuf
+    impl: 'Committing the target early (after resp. before $\mathsf{pk}$) only restricts the adversary.'
+    sep: 'Let $\mathsf{Sign}''(\mathsf{sk},m;r)=(\sigma,\mathsf{Sign}^\star(\mathsf{sk},m''))$ with $\sigma=\mathsf{Sign}^\star(\mathsf{sk},m;r)$ and $m''=g(\sigma)$, where $g$ maps signatures into $\mathcal{M}$. Every query answer contains a valid signature on the fresh message $m''$, breaking $\mathrm{wEUF}$; an $\mathrm{sSUF}$ adversary commits to its target while $m''$ is unpredictable, so $\mathrm{sSUF}$ reduces to $\Sigma^\star$.'
+  - from: ssuf
+    to: wsuf
+    impl: 'Committing the target early (after resp. before $\mathsf{pk}$) only restricts the adversary.'
+    sep: 'Embed a uniform tag $t\in\mathcal{M}$ in $\mathsf{pk}$ and let $(t,0)$ verify. An $\mathrm{sSUF}$ adversary targets $t$ after seeing $\mathsf{pk}$; a $\mathrm{wSUF}$ adversary commits before and hits $t$ with probability $1/|\mathcal{M}|$.'
+  - from: wsuf
+    to: uuf
+    impl: 'A uniformly sampled target is a special case of an adversarially chosen a-priori target.'
+    sep: 'Let every message in a sparse set $W\subset\mathcal{M}$ verify trivially. A $\mathrm{wSUF}$ adversary targets $W$; a uniform $\mathrm{UUF}$ target lands in $W$ with negligible probability.'
+  - from: uuf
+    to: ub
+    impl: 'From $\mathsf{sk}$ the adversary signs the challenge message, so breaking $\mathrm{UB}$ breaks $\mathrm{UUF}$.'
+    sep: 'Use hash-and-sign with a collision-vulnerable hash. A collision $m''$ of a signed $m$ gives the forgery $(m'',\sigma)$, breaking $\mathrm{UUF}$; $\mathsf{sk}$ stays hidden, so $\mathrm{UB}$ holds.'
+  - from: acma
+    to: dcma
+    impl: 'An adversary that may choose later (after $\mathsf{pk}$, resp. adaptively) can fix its choices earlier.'
+    sep: 'Let a forgery require querying $m_2=f(\sigma_1)$, where $\sigma_1$ answers $m_1$. An $\mathrm{aCMA}$ adversary queries adaptively; a $\mathrm{dCMA}$ adversary fixes its queries in advance and cannot predict $\sigma_1$.'
+  - from: dcma
+    to: gcma
+    impl: 'An adversary that may choose later (after $\mathsf{pk}$, resp. adaptively) can fix its choices earlier.'
+    sep: 'Embed a uniform tag $t\in\mathcal{M}$ in $\mathsf{pk}$ and let a signature on $t$ reveal $\mathsf{sk}$. A $\mathrm{dCMA}$ adversary queries $t$ after seeing $\mathsf{pk}$; a $\mathrm{gCMA}$ adversary commits its queries before.'
+  - from: gcma
+    to: kma
+    impl: 'Choosing messages from the distribution $\mathcal{D}_M$ reproduces a known-message adversary.'
+    sep: 'Let a signature on a fixed message $m_0$ reveal $\mathsf{sk}$, where $\mathcal{D}_M$ never outputs $m_0$. A $\mathrm{gCMA}$ adversary queries $m_0$; a $\mathrm{KMA}$ adversary reaches $m_0$ with negligible probability.'
+  - from: kma
+    to: koa
+    impl: 'The $\mathrm{KOA}$ adversary makes no signing query.'
+    sep: 'Append $\mathsf{Sign}^\star(\mathsf{sk},m_0)$ to every signature, for a fixed message $m_0$ that $\mathcal{D}_M$ never outputs. A $\mathrm{KMA}$ adversary outputs the forgery on $m_0$; with $(\mathsf{rc},\mathsf{kc})=(\mathrm{KOA},\emptyset)$ the $\mathrm{KOA}$ experiment issues no signature, so $\mathrm{KOA}$ reduces to $\Sigma^\star$.'
+  - from: acra
+    to: dcra
+    impl: 'The randomness chain is identical with the randomness choice in place of the message choice.'
+    sep: 'The separating examples for the implications $\mathrm{KOA}\not\rightarrow\mathrm{KRA}\not\rightarrow\mathrm{gCRA}\not\rightarrow\mathrm{dCRA}\not\rightarrow\mathrm{aCRA}$ are analogous to those for the message choice.'
+  - from: dcra
+    to: gcra
+    impl: 'The randomness chain is identical with the randomness choice in place of the message choice.'
+    sep: 'The separating examples for the implications $\mathrm{KOA}\not\rightarrow\mathrm{KRA}\not\rightarrow\mathrm{gCRA}\not\rightarrow\mathrm{dCRA}\not\rightarrow\mathrm{aCRA}$ are analogous to those for the message choice.'
+  - from: gcra
+    to: kra
+    impl: 'The randomness chain is identical with the randomness choice in place of the message choice.'
+    sep: 'The separating examples for the implications $\mathrm{KOA}\not\rightarrow\mathrm{KRA}\not\rightarrow\mathrm{gCRA}\not\rightarrow\mathrm{dCRA}\not\rightarrow\mathrm{aCRA}$ are analogous to those for the message choice.'
+  - from: kra
+    to: rkoa
+    impl: 'The randomness chain is identical with the randomness choice in place of the message choice.'
+    sep: 'The separating examples for the implications $\mathrm{KOA}\not\rightarrow\mathrm{KRA}\not\rightarrow\mathrm{gCRA}\not\rightarrow\mathrm{dCRA}\not\rightarrow\mathrm{aCRA}$ are analogous to those for the message choice.'
+  - from: ltsk
+    to: empty
+    impl: 'For the key exposure, $L_{\mathsf{tsk}}\rightarrow\emptyset$ is immediate: an adversary without the key exposure oracle is one that never queries it.'
+    sep: 'The implication $\emptyset\not\rightarrow L_{\mathsf{tsk}}$ for key exposure is trivial.'
+
+theorems:
+  - id: 'thm:product-order'
+    name: 'Theorem'
+    statement: 'Let $\mathsf{mc},\mathsf{mc}''\neq\mathrm{KOA}$. Then $(\mathsf{sg},\mathsf{mc},\mathsf{rc},\mathsf{kc})\rightarrow(\mathsf{sg}'',\mathsf{mc}'',\mathsf{rc}'',\mathsf{kc}'')$ if and only if $\mathsf{sg}\rightarrow\mathsf{sg}''$, $\mathsf{mc}\rightarrow\mathsf{mc}''$, $\mathsf{rc}\rightarrow\mathsf{rc}''$, and $\mathsf{kc}\rightarrow\mathsf{kc}''$.'
+    note: 'The restriction $\mathsf{mc},\mathsf{mc}''\neq\mathrm{KOA}$ excludes the key-only case, where the goal chain collapses: without any issued signature, $\mathrm{sEUF}$ and $\mathrm{wEUF}$ coincide.'
+  - id: 'lem:marginal-not-joint'
+    name: 'Lemma'
+    statement: 'Assume deterministic $\mathrm{wEUF}$-$\mathrm{aCMA}$-secure signature schemes exist. There is a signature scheme that is $\mathrm{wEUF}$-secure under $(\mathrm{aCMA},\mathrm{KOA},\emptyset)$ and under $(\mathrm{KOA},\mathrm{aCRA},\emptyset)$, but is not $\mathrm{wEUF}$-secure under $(\mathrm{aCMA},\mathrm{aCRA},\emptyset)$.'
+    note: 'Security against a combination of attack vectors therefore requires a proof in the experiment where all attack vectors are enabled.'
+  - id: 'prop:asymmetry'
+    name: 'Lemma'
+    statement: '$\mathrm{sEUF}$-$\mathrm{aCMA}\rightarrow\mathrm{UB}$-$\mathrm{KMA}$, but $\mathrm{sEUF}$-$\mathrm{aCMA}\not\rightarrow\mathrm{UB}$-$\mathrm{KRA}$.'
+    note: 'Schnorr is $\mathrm{sEUF}$-$\mathrm{aCMA}$-secure, but learning a single nonce reveals the secret key.'
+  - id: 'thm:wrappers-closure'
+    name: 'Theorem'
+    statement: 'Let $\Sigma$ be $\mathsf{sg}$-$\mathrm{aCMA}$-secure. Then $\mathsf{GenTsk}(\mathsf{GenTr}(\Sigma))$ and $\mathsf{GenTr}(\mathsf{GenTsk}(\Sigma))$ are $\mathsf{sg}$-$(\mathrm{aCMA},\mathrm{aCRA},L_{\mathsf{tsk}})$-secure.'
+    note: 'Each wrapper only secures against its attack vector, but preserves what the other wrapper establishes.'
+
+beyond:
+  title: 'Beyond Unforgeability under Additional Attack Vectors'
+  lead: 'Our framework expresses these goals under additional attack vectors as ordinary composed notions $(\mathsf{sg},\mathsf{am})$ with $\mathsf{sg}\in\{\mathrm{msUEO},\mathrm{MB},\mathrm{NR}\}$ and $\mathsf{am}=(\mathsf{mc},\mathsf{rc},\mathsf{kc})$, which prior work did not address.'
+  theorems:
+    - id: 'thm:eo-mb-robust'
+      name: 'Theorem'
+      statement: 'The BUFF transform achieves malicious strong universal exclusive ownership $\mathrm{msUEO}$ and message bounding $\mathrm{MB}$ under adaptive chosen randomness.'
+      note: 'Exclusive ownership and message bounding survive the strongest randomness attack.'
+    - id: 'thm:nr-fragile'
+      name: 'Theorem (Non-resignability is not randomness-robust)'
+      statement: 'There is a signature scheme that is non-resignable under honest randomness but not under a known-randomness attack: $(\mathrm{NR},(\mathrm{aCMA},\mathrm{KOA}))\not\rightarrow(\mathrm{NR},(\mathrm{aCMA},\mathrm{KRA}))$. Merely *learning* the randomness of the challenge signature lets the adversary recover the hidden message and re-sign it.'
+      note: 'As for unforgeability, the first step of the randomness chain is already fatal.'
+    - id: 'thm:nr-hedge'
+      name: 'Theorem (Hedging restores non-resignability)'
+      statement: 'Let $\Sigma$ be non-resignable under honest randomness. Then the hedged scheme $\mathsf{GenTr}(\Sigma)$ is non-resignable under adaptive chosen randomness.'
+      note: 'The repair is precisely our randomness wrapper.'
+    - id: 'thm:buff-composes'
+      name: 'Theorem (Composition with beyond-unforgeability)'
+      statement: 'The randomness wrapper composes with the exclusive-ownership, message-bounding, and non-resignability transform of Cremers et al.: the resulting scheme achieves the beyond-unforgeability goals *and* chosen-randomness security simultaneously.'
+      note: 'Message bounding is, moreover, preserved under all randomness attacks unconditionally; non-resignability is not, so in the composition it is the hedging wrapper that secures it.'
+
+selection:
+  title: 'Selected composed notion'
+  implies: 'Implies'
+  notImplies: 'Does not imply'
+  koaNote: 'The restriction $\mathsf{mc},\mathsf{mc}''\neq\mathrm{KOA}$ excludes the key-only case, where the goal chain collapses: without any issued signature, $\mathrm{sEUF}$ and $\mathrm{wEUF}$ coincide.'
+  chainNote: 'All of them are basically trivial: a stronger value simulates every weaker one, with all other components fixed.'
+  noStrongerNote: 'Hence there are no relations between composed notions beyond the trivial ones, and in particular, strengthening one attack vector never compensates for another.'

@@ -1,0 +1,25 @@
+<section class="panel is-hidden" id="panel-latex" role="tabpanel" aria-label="LaTeX Code">
+  <article class="card">
+    <div class="card-head">
+      <div>
+        <h2 class="card-title">Copy-paste LaTeX blocks</h2>
+        <p class="card-note">One box for the definition, one for the experiment, and one for the oracle.</p>
+      </div>
+      <output id="globalCopyStatus" class="copy-status" aria-live="polite"></output>
+    </div>
+    <div class="copy-stack">
+      {{- range slice (dict "id" "definitionOutput" "title" "Definition") (dict "id" "adminOutput" "title" "Administrative part") (dict "id" "oracleOutput" "title" "The oracle") }}
+      <div class="copy-card">
+        <div class="copy-card-head">
+          <span class="copy-card-title">{{ .title }}</span>
+          <button type="button" class="btn btn-copy" data-target="{{ .id }}">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2.5"/><path d="M15 5.5A2.5 2.5 0 0 0 12.5 3H6.5A2.5 2.5 0 0 0 4 5.5v6A2.5 2.5 0 0 0 6.5 14"/></svg>
+            Copy
+          </button>
+        </div>
+        <pre class="latex-output" tabindex="0" aria-label="{{ .title }} LaTeX"><code id="{{ .id }}" class="language-latex"></code></pre>
+      </div>
+      {{- end }}
+    </div>
+  </article>
+</section>

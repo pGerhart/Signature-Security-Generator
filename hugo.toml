@@ -1,0 +1,15 @@
+baseURL = ''
+relativeURLs = true
+languageCode = 'en-us'
+title = 'Signature Security Generator'
+disableKinds = ['taxonomy', 'term', 'RSS', 'sitemap', '404']
+
+[markup.goldmark.renderer]
+  unsafe = true
+
+[minify]
+  disableJSON = true
+
+[params]
+  paperTitle = 'A Comprehensive Security Framework For Digital Signatures'
+  notionPlural = 'composed notions'

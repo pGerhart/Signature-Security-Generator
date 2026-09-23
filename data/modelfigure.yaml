@@ -1,0 +1,146 @@
+narrowBelow: 720
+
+grid:
+  wide:
+    pad: 26
+    box: {w: 132, h: 50}
+    adv: {w: 44, pad: 12}
+    gap:
+      advToLane: 30
+      laneToCompiler: 78
+      compilerToBus: 46
+      busToSpine: 46
+    row:
+      spineToBoundary: 40
+      boundaryPad: 22
+      regionPad: 18
+      laneToSpine: 40
+    detEntry: 18
+    laneExit: 14
+    turn: 6
+    port: 11
+    corner: 8
+    plate: {padX: 6, padY: 3, gap: 6, radius: 4}
+  narrow:
+    pad: 16
+    box: {w: 110, h: 46}
+    adv: {w: 38, pad: 12}
+    gap:
+      advToCol: 30
+      colToGutter: 68
+      lane: 20
+    gutterLanes: 3
+    row:
+      step: 30
+      captionH: 20
+      boundaryPad: 18
+    detEntry: 12
+    port: 11
+    corner: 8
+    plate: {padX: 6, padY: 3, gap: 6, radius: 4}
+
+type:
+  box: {size: 15, weight: 600}
+  math: {size: 17, weight: 500}
+  edge: {size: 12, weight: 600}
+  region: {size: 12, weight: 700}
+  adv: {size: 20}
+
+stroke:
+  box: 1.5
+  reached: 2.2
+  region: 1.2
+  boundary: 1.4
+  adv: 1.6
+  port: 2.5
+  edge: 2
+  arrow: 1.1
+  hover: 2
+
+svgLabel:
+  classical: 'Classical signature model'
+  extended: 'Extended signature model'
+
+labels:
+  algorithm: 'Sign'
+  detComp: 'DetComp'
+  adversary: 'A'
+  keyDerivation: 'Key Derivation'
+  randomnessGeneration: 'Randomness Generation'
+  messageAttack: 'Message Attacks'
+  randomnessAttack: 'Randomness Attacks'
+  keyExposure: 'Key Exposure'
+  leakage: 'Leakage'
+
+wires:
+  m: 'm'
+  s: 'σ'
+  sk: 'sk'
+  r: 'r'
+  tsk: 'tsk'
+  vk: 'vk'
+  tr1: 'tr₁'
+  tr2: 'tr₂'
+
+tooltips:
+  classical:
+    adv: 'Adversary.'
+    det: 'Deterministic computation.'
+    m: 'Public message input m.'
+    s: 'Public signature output σ.'
+    sk: 'Secret key input sk.'
+    genR: 'External randomness source GenR.'
+  extended:
+    adv: 'Adversary. Red arrows indicate the selected attack vectors.'
+    det: 'DetComp is the potentially untrusted (standardized) deterministic computation.'
+    m: 'Input message m.'
+    s: 'Output signature σ.'
+    sk: 'Master secret key.'
+    skProtected: 'Protected master key stored in the trusted key-derivation part.'
+    genR: 'External randomness source GenR.'
+    genTsk: 'Leakage compiler. Suitable compilers exist, and the construction can depend on the leakage function.'
+    genTr: 'GenTr: trusted randomness compiler. Typical instantiation: tr <- F(sk, m; r) for a PRF F, so internal randomness is re-derived even if the external source is bad.'
+
+cards:
+  attacks: 'Active attacks'
+  compilers: 'Needed compilers'
+
+items:
+  classic: 'Classic attacks'
+  randomness: 'Randomness attacks'
+  leakage: 'Key exposure / leakage'
+  compilers: 'Compilers'
+
+empty:
+  noCompilers: 'No attack-specific compiler is needed.'
+
+classical:
+  randomnessLabel: 'None'
+  randomnessDetail: 'No randomness attack is part of the classical model view.'
+  leakageLabel: 'None'
+  leakageDetail: 'No key-exposure component is active in the classical model view.'
+
+extended:
+  noneLabel: 'None'
+  randomnessDetail: 'No randomness attack is selected.'
+  leakageDetail: 'No key-exposure or leakage component is selected.'
+  leakageLabelUke: 'UKE / leakage active'
+  leakageLabel: 'Leakage oracle active'
+
+compilerItems:
+  genTr:
+    name: 'GenTr'
+    detail: 'Trusted randomness compiler. Typical instantiation: tr <- F(sk, m; r) with a PRF F to derive internal randomness from the external source.'
+  genTsk:
+    name: 'GenTsk'
+    detail: 'Leakage compiler. Suitable compilers exist, and the construction can depend on the leakage function.'
+
+status:
+  classical: 'Classical attack surface: '
+  classicalKoa: 'Classical KOA case: no active message-learning or message-control arrow is shown.'
+  trivial: 'Trivial extended case: only the baseline message, key, and signature flow is active. No attack-specific compiler is needed.'
+  activePrefix: 'Active selection: '
+  messagePart: 'message attacks: '
+  randomnessPart: 'randomness attacks: '
+  leakagePartUke: 'key exposure / leakage active'
+  leakagePart: 'leakage active'

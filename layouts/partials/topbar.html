@@ -1,0 +1,19 @@
+<header class="topbar">
+  <div class="topbar-inner">
+    <div class="brand">
+      <span class="brand-mark" aria-hidden="true">&Sigma;</span>
+      <span class="brand-name">{{ .Site.Title }}</span>
+    </div>
+    <nav class="viewtabs" id="viewTabs" role="tablist" aria-label="View">
+      <button type="button" class="viewtab" role="tab" data-view="visual"    aria-controls="panel-visual"    aria-selected="true">Visual Overview</button>
+      <button type="button" class="viewtab" role="tab" data-view="latex"     aria-controls="panel-latex"     aria-selected="false"><span class="latex-logo">L<span class="latex-a">A</span>T<span class="latex-e">E</span>X</span> Code</button>
+      <button type="button" class="viewtab" role="tab" data-view="model"     aria-controls="panel-model"     aria-selected="false">Model</button>
+      <button type="button" class="viewtab" role="tab" data-view="relations" aria-controls="panel-relations" aria-selected="false">Relations</button>
+      <button type="button" class="viewtab" role="tab" data-view="notation"  aria-controls="panel-notation"  aria-selected="false">Notation</button>
+    </nav>
+    <button type="button" class="theme-toggle" id="themeToggle" aria-label="Toggle dark theme" aria-pressed="false">
+      <svg class="icon icon-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.4"/><g stroke-linecap="round"><path d="M12 2.2v2.6M12 19.2v2.6M2.2 12h2.6M19.2 12h2.6M5.1 5.1l1.8 1.8M17.1 17.1l1.8 1.8M18.9 5.1l-1.8 1.8M6.9 17.1l-1.8 1.8"/></g></svg>
+      <svg class="icon icon-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.2A8.4 8.4 0 0 1 9.8 4 8.4 8.4 0 1 0 20 14.2Z"/></svg>
+    </button>
+  </div>
+</header>

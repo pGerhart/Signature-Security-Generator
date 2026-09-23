@@ -1,0 +1,189 @@
+.control-label {
+  display: block;
+  font-size: .6875rem;
+  font-weight: 700;
+  letter-spacing: .11em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+.segmented {
+  display: inline-flex;
+  padding: 3px;
+  gap: 2px;
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+}
+
+.segment, .viewtab {
+  border: 0;
+  background: transparent;
+  border-radius: 999px;
+  padding: .4rem .85rem;
+  font-size: .8125rem;
+  font-weight: 600;
+  color: var(--ink-2);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color .13s var(--ease-3), color .13s var(--ease-3);
+}
+.segment:hover, .viewtab:hover { color: var(--ink); }
+
+.segment.is-active {
+  background: var(--surface);
+  color: var(--accent-ink);
+  box-shadow: 0 1px 2px rgba(16, 24, 40, .12);
+}
+
+.viewtabs {
+  display: inline-flex;
+  padding: 3px;
+  gap: 2px;
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+
+  contain: paint;
+  max-width: 100%;
+  scrollbar-width: none;
+}
+.viewtabs::-webkit-scrollbar { display: none; }
+.viewtab.is-active { background: var(--tab-bg); color: var(--tab-ink); }
+.viewtab.is-active:hover { color: var(--tab-ink); }
+
+.field { display: grid; gap: .4rem; }
+
+.field-label {
+  font-size: .8125rem;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.field-note {
+  font-size: .78rem;
+  line-height: 1.5;
+  color: var(--ink-3);
+}
+.field-note:empty { display: none; }
+.field-note .katex { font-size: .95em; }
+.note-term { font-weight: 600; color: var(--ink-2); }
+
+.select-wrap {
+  position: relative;
+  display: block;
+  background: var(--surface-2);
+  border: 1px solid var(--line-2);
+  border-radius: 10px;
+  transition: border-color .13s var(--ease-3);
+}
+.select-wrap:hover { border-color: var(--accent); }
+.select-wrap:focus-within { border-color: var(--accent); outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.select-native {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+  font: inherit;
+}
+
+.select-face {
+  display: grid;
+  gap: .1rem;
+  padding: .45rem 2rem .5rem .7rem;
+  pointer-events: none;
+}
+.select-key { font-size: .8125rem; font-weight: 700; color: var(--ink); }
+.select-name { font-size: .75rem; line-height: 1.35; color: var(--ink-2); }
+
+.text-input {
+  width: 100%;
+  padding: .45rem .7rem;
+  font: inherit;
+  font-size: .8125rem;
+  color: var(--ink);
+  background: var(--surface-2);
+  border: 1px solid var(--line-2);
+  border-radius: 10px;
+}
+.text-input::placeholder { color: var(--ink-3); }
+.text-input:hover, .text-input:focus { border-color: var(--accent); }
+
+.select-chevron {
+  position: absolute;
+  right: .6rem;
+  top: 1.15rem;
+  width: 15px;
+  height: 15px;
+  fill: none;
+  stroke: var(--ink-3);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  pointer-events: none;
+}
+
+.switch-stack { display: grid; gap: .5rem; }
+
+.switch {
+  display: flex;
+  align-items: center;
+  gap: .6rem;
+  cursor: pointer;
+  font-size: .8125rem;
+}
+
+@media (pointer: coarse) {
+  .switch { min-height: 44px; }
+  .switch-stack { gap: .1rem; }
+  .segment, .viewtab { padding-block: .7rem; }
+}
+.switch input { position: absolute; opacity: 0; width: 0; height: 0; }
+
+.switch-track {
+  flex: none;
+  width: 34px;
+  height: 20px;
+  padding: 2px;
+  border-radius: 999px;
+  background: var(--surface-3);
+  border: 1px solid var(--line-2);
+  transition: background-color .14s var(--ease-3), border-color .14s var(--ease-3);
+}
+
+.switch-thumb {
+  display: block;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--surface);
+  box-shadow: 0 1px 2px rgba(16, 24, 40, .25);
+  transition: translate .14s var(--ease-3);
+}
+
+.switch input:checked + .switch-track { background: var(--accent); border-color: var(--accent); }
+.switch input:checked + .switch-track .switch-thumb { translate: 14px 0; }
+.switch input:focus-visible + .switch-track { outline: 2px solid var(--accent); outline-offset: 2px; }
+.switch-text { color: var(--ink); }
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: .4rem;
+  padding: .38rem .7rem;
+  font-size: .78rem;
+  font-weight: 600;
+  border-radius: 8px;
+  border: 1px solid var(--line-2);
+  background: var(--surface);
+  color: var(--ink-2);
+  cursor: pointer;
+  transition: color .13s var(--ease-3), border-color .13s var(--ease-3), background-color .13s var(--ease-3);
+}
+.btn:hover { color: var(--accent-ink); border-color: var(--accent); }
+.btn.is-done { color: var(--teal); border-color: var(--teal); }

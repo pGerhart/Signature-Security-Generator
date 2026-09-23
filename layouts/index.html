@@ -1,0 +1,18 @@
+{{ define "main" }}
+{{ partial "topbar.html" . }}
+<main class="page">
+  {{ partial "hero.html" . }}
+  <div class="workspace" id="workspace" data-view="visual">
+    {{ partial "rail.html" . }}
+    <div class="canvas" id="canvas">
+      {{ partial "notion-bar.html" . }}
+      {{ partial "panel-visual.html" . }}
+      {{ partial "panel-latex.html" . }}
+      {{ partial "panel-model.html" . }}
+      {{ partial "panel-notation.html" . }}
+      {{ partial "panel-relations.html" . }}
+    </div>
+  </div>
+</main>
+<div id="tooltip" class="tooltip" role="tooltip" aria-hidden="true"></div>
+{{ end }}

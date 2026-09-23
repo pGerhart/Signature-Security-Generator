@@ -1,0 +1,52 @@
+{{- $goals := site.Data.goals -}}
+{{- $models := site.Data.models -}}
+{{- $extGoalsByKey := dict -}}
+{{- range $goals.extendedGoals }}{{ $extGoalsByKey = merge $extGoalsByKey (dict .key .) }}{{ end -}}
+{{- $unforge := slice -}}
+{{- range $goals.extendedUnforgeability }}{{ $unforge = $unforge | append (index $extGoalsByKey .) }}{{ end -}}
+{{- $ownership := slice -}}
+{{- range $goals.extendedOwnership }}{{ $ownership = $ownership | append (index $extGoalsByKey .) }}{{ end -}}
+<aside class="rail" aria-label="Selection">
+  <div class="rail-inner">
+    <div class="rail-block">
+      <span class="control-label" id="frameworkLabel">{{ $goals.controls.framework }}</span>
+      <div class="segmented" id="frameworkTabs" role="tablist" aria-labelledby="frameworkLabel">
+        <button type="button" class="segment is-active" role="tab" aria-selected="true"  data-framework="classical" aria-controls="controls-classical">Classical</button>
+        <button type="button" class="segment"           role="tab" aria-selected="false" data-framework="extended"  aria-controls="controls-extended">Extended</button>
+      </div>
+    </div>
+
+    <div class="rail-block" id="controls-classical" role="tabpanel" aria-label="Classical">
+      {{ partial "select.html" (dict "id" "classicalGoal"  "label" $goals.controls.classicalGoal   "entries" $goals.classicalGoals) }}
+      {{ partial "select.html" (dict "id" "classicalModel" "label" $goals.controls.classicalModel "entries" $models.classicalModels) }}
+    </div>
+
+    <div class="rail-block is-hidden" id="controls-extended" role="tabpanel" aria-label="Extended">
+      {{ partial "select.html" (dict "id" "extendedUnforgeability" "label" $goals.controls.extendedUnforgeability "entries" $unforge) }}
+      {{ partial "select.html" (dict "id" "extendedOwnership" "label" $goals.controls.extendedOwnership "entries" $ownership "none" $goals.extendedOwnershipNone) }}
+      <div class="field">
+        <span class="field-label">{{ $goals.controls.extendedAdditional }}</span>
+        <div class="switch-stack">
+          {{- range $goals.extendedAdditional }}
+          <label class="switch" for="{{ .control }}">
+            <input type="checkbox" id="{{ .control }}" data-goal="{{ .key }}">
+            <span class="switch-track" aria-hidden="true"><span class="switch-thumb"></span></span>
+            <span class="switch-text">{{ .label }}</span>
+          </label>
+          {{- end }}
+        </div>
+        <p class="field-note" id="extendedAdditional-note"></p>
+      </div>
+      {{ partial "select.html" (dict "id" "messageChoice"    "label" $goals.controls.messageChoice    "entries" $models.messageChoices) }}
+      {{ partial "select.html" (dict "id" "randomnessChoice" "label" $goals.controls.randomnessChoice "entries" $models.randomnessChoices) }}
+      <div class="field">
+        <label class="switch" for="{{ $models.leakage.control }}">
+          <input type="checkbox" id="{{ $models.leakage.control }}">
+          <span class="switch-track" aria-hidden="true"><span class="switch-thumb"></span></span>
+          <span class="switch-text">{{ $models.leakage.label }}</span>
+        </label>
+        <p class="field-note" id="leakageToggle-note"></p>
+      </div>
+    </div>
+  </div>
+</aside>

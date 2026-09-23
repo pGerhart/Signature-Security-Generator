@@ -1,0 +1,64 @@
+sectionTitles:
+  algorithms: 'Algorithms and Procedures'
+  variables: 'Variables and Sets'
+  classicalGoals: 'Classical Security Goals'
+  classicalModels: 'Classical Adversary Models'
+  extendedGoals: 'Extended Security Goals'
+  choices: 'Message and Randomness Choices'
+  leakage: 'Leakage'
+
+choiceNote: 'We note that the same acronym represents the variable choice and the corresponding attack (e.g., we use $\mathrm{aCMA}$ for both adaptive message choice and attacks).'
+
+commonAlgorithms:
+  - tex: '\Sigma'
+    description: 'signature scheme'
+  - tex: '\mathsf{Gen}'
+    description: 'key-generation algorithm'
+  - tex: '\mathsf{Sign}'
+    description: 'signing algorithm'
+  - tex: '\mathsf{Vrfy}'
+    description: 'verification algorithm'
+  - tex: '\mathsf{KCheck}'
+    description: 'relation check that verifies whether a secret key matches a public key'
+  - tex: '\mathcal{A}'
+    description: 'adversary'
+  - tex: '\mathcal{O}'
+    description: 'oracle'
+
+commonVariables:
+  - tex: '\lambda'
+    description: 'security parameter'
+  - tex: '\mathsf{sk},\mathsf{pk}'
+    description: 'secret key and public key'
+  - tex: 'm, m^*'
+    description: 'message and challenge/output message'
+  - tex: '\sigma, \sigma^*'
+    description: 'signature and challenge/output signature'
+  - tex: 'r'
+    description: 'randomness used by the signing algorithm'
+  - tex: 'Q'
+    description: 'queue of observed message-signature pairs'
+  - tex: 'M'
+    description: 'pre-committed message set for direct or generic message choice'
+  - tex: 'R'
+    description: 'pre-committed randomness set for direct or generic randomness choice'
+
+extendedAlgorithms:
+  - tex: '\mathsf{GenTr}'
+    description: 'transformation procedure for randomness'
+  - tex: '\mathsf{GenTsk}'
+    description: 'transformation procedure for temporary secret keys'
+
+extendedVariables:
+  - tex: '\mathsf{tr}'
+    description: 'internally derived randomness after the randomness transformation'
+  - tex: '\mathsf{tsk}'
+    description: 'temporary secret key after the key transformation'
+
+leakageItems:
+  - tex: 'L_{\mathsf{tsk}}^{m,\sigma}'
+    description: 'leakage function associated with a queried message-signature pair'
+  - tex: 'Q_L'
+    description: 'set of messages for which leakage was requested'
+  - tex: 'T'
+    description: 'internal store of tuples $(m,\sigma,\mathsf{tr},\mathsf{tsk})$ for leakage lookups'
