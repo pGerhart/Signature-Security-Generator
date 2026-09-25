@@ -14,8 +14,7 @@ const FAMILY = {
   adv: 'attack'
 };
 
-const describeLeakage = (state) =>
-  (state.extendedUKE ? modelsData.leakage.figureDetailUke : modelsData.leakage.figureDetail);
+const describeLeakage = () => modelsData.leakage.figureDetail;
 
 export function getModelConfig(state) {
   if (state.framework === 'classical') {
@@ -44,7 +43,7 @@ export function getModelConfig(state) {
   const rc = defs.randomnessChoices[state.randomnessChoice];
   const showClassic = state.messageChoice !== 'ko';
   const showRandom = state.randomnessChoice !== 'ko';
-  const showLeakage = state.leakage || state.extendedUKE;
+  const showLeakage = state.leakage;
   const compilerItems = [];
   if (showRandom) compilerItems.push(figureData.compilerItems.genTr);
   if (showLeakage) compilerItems.push(figureData.compilerItems.genTsk);
@@ -60,13 +59,11 @@ export function getModelConfig(state) {
     classicDetail: mc.figureDetail,
     randomnessLabel: showRandom ? `${rc.acronym} · ${rc.label}` : figureData.extended.noneLabel,
     randomnessDetail: showRandom ? rc.figureDetail : figureData.extended.randomnessDetail,
-    leakageLabel: showLeakage
-      ? (state.extendedUKE ? figureData.extended.leakageLabelUke : figureData.extended.leakageLabel)
-      : figureData.extended.noneLabel,
+    leakageLabel: showLeakage ? figureData.extended.leakageLabel : figureData.extended.noneLabel,
     leakageDetail: showLeakage ? describeLeakage(state) : figureData.extended.leakageDetail,
     attackLabel: `${L.messageAttack} (${mc.acronym})`,
     randomnessAttackLabel: `${L.randomnessAttack} (${rc.acronym})`,
-    leakageAttackLabel: state.extendedUKE ? L.keyExposure : L.leakage,
+    leakageAttackLabel: L.leakage,
     compilerItems
   };
 }
@@ -82,7 +79,7 @@ function buildStatusText(cfg, state) {
   const parts = [];
   if (cfg.showClassic) parts.push(`${s.messagePart}${defs.messageChoices[state.messageChoice].acronym}`);
   if (cfg.showRandom) parts.push(`${s.randomnessPart}${defs.randomnessChoices[state.randomnessChoice].acronym}`);
-  if (cfg.showLeakage) parts.push(state.extendedUKE ? s.leakagePartUke : s.leakagePart);
+  if (cfg.showLeakage) parts.push(s.leakagePart);
   return `${s.activePrefix}${parts.join(', ')}.`;
 }
 
@@ -439,7 +436,7 @@ export function renderModel(target, state) {
 }
 
 export function retheme() {
-  if (cy) cy.style(buildStyle(drawing.corner, drawing.plateRadius));
+  if (cy && lastShape) cy.style(buildStyle(lastShape.corner, lastShape.plateRadius));
 }
 
 export function refit() {

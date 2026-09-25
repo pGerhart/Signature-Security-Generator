@@ -30,10 +30,12 @@ export function experimentLabelClassical(goal, model) {
 }
 
 export function experimentLabelExtended(goals, mc, rc, leakage) {
-  const gtxt = goals.map((g) => raw`\mathrm{${defs.extendedGoals[g].acronym}}`).join(',');
+  const securityGoals = goals.filter((g) => g !== 'uke');
+  const gtxt = securityGoals.map((g) => raw`\mathrm{${defs.extendedGoals[g].acronym}}`).join(',');
+  const restriction = goals.includes('uke') ? raw`,\mathrm{UKE}` : raw``;
   const parts = [raw`\mathrm{${defs.messageChoices[mc].acronym}}`, raw`\mathrm{${defs.randomnessChoices[rc].acronym}}`];
   if (leakage) parts.push(raw`L_{\mathsf{tsk}}^{m,\sigma}`);
-  return raw`((${gtxt})\text{-}(${parts.join(',')}))^{\mathcal{A}}_{\Sigma}(\lambda)`;
+  return raw`((${gtxt})${restriction}\text{-}(${parts.join(',')}))^{\mathcal{A}}_{\Sigma}(\lambda)`;
 }
 
 export function probabilityLabelClassical(goal, model) {
@@ -49,11 +51,15 @@ export function definitionSentenceClassical(goal, model) {
 }
 
 export function definitionSentenceExtended(goals, mc, rc, leakage) {
-  const goalsText = joinWithAnd(goals.map((g) => goalDisplay(defs.extendedGoals[g])));
+  const securityGoals = goals.filter((g) => g !== 'uke');
+  const goalsText = joinWithAnd(securityGoals.map((g) => goalDisplay(defs.extendedGoals[g])));
   const parts = [modelDisplay(defs.messageChoices[mc]), modelDisplay(defs.randomnessChoices[rc])];
   if (leakage) parts.push(`leakage function ${inlineMath(raw`L_{\mathsf{tsk}}^{m,\sigma}`)}`);
-  const noun = goals.length === 1 ? 'security goal' : 'security goals';
-  return `A signature scheme ${inlineMath(raw`\Sigma=(\mathsf{Gen},\mathsf{Sign},\mathsf{Vrfy})`)} achieves ${noun} ${goalsText} under an adversary with ${joinWithAnd(parts)} if for all ${inlineMath(raw`\mathsf{PPT}`)} adversaries ${inlineMath(raw`\mathcal{A}`)} it holds`;
+  const noun = securityGoals.length === 1 ? 'security goal' : 'security goals';
+  const restriction = goals.includes('uke')
+    ? ` with the ${inlineMath(raw`\mathrm{${defs.extendedGoals.uke.acronym}}`)} restriction`
+    : '';
+  return `A signature scheme ${inlineMath(raw`\Sigma=(\mathsf{Gen},\mathsf{Sign},\mathsf{Vrfy})`)} achieves ${noun} ${goalsText}${restriction} under an adversary with ${joinWithAnd(parts)} if for all ${inlineMath(raw`\mathsf{PPT}`)} adversaries ${inlineMath(raw`\mathcal{A}`)} it holds`;
 }
 
 export function definitionTail() {

@@ -1,29 +1,33 @@
-import { defs, relationsData, modelsData, figureData } from '../data.js';
+import { defs, relationsData, modelsData, parseOwnership } from '../data.js';
 import { escapeHtml, escapeAttr } from '../tex.js';
 
 const R = relationsData;
 
-const INACTIVE_NOTE = {
-  randomness: figureData.classical.randomnessDetail,
-  exposure: figureData.classical.leakageDetail
-};
+const CLASSICAL_LANES = ['goal', 'message'];
 
-export function activeNode(laneId, state) {
+export function activeNodes(laneId, state) {
   const classical = state.framework === 'classical';
-  if (laneId === 'goal') return classical ? state.classicalGoal : state.extendedUnforgeability;
+  if (laneId === 'goal') return [classical ? state.classicalGoal : state.extendedUnforgeability];
+  if (laneId.startsWith('ownership')) {
+    const ownership = classical ? '' : parseOwnership(state.extendedOwnership);
+    return ownership ? [ownership] : [];
+  }
   if (laneId === 'message') {
-    if (classical) return state.classicalModel;
-    return { ko: 'koa', km: 'kma', gcm: 'gcma', dcm: 'dcma', acm: 'acma' }[state.messageChoice];
+    if (classical) return [state.classicalModel];
+    return [{ ko: 'koa', km: 'kma', gcm: 'gcma', dcm: 'dcma', acm: 'acma' }[state.messageChoice]];
   }
   if (laneId === 'randomness') {
-    if (classical) return null;
-    return { ko: 'rkoa', kr: 'kra', gcr: 'gcra', dcr: 'dcra', acr: 'acra' }[state.randomnessChoice];
+    if (classical) return [];
+    return [{ ko: 'rkoa', kr: 'kra', gcr: 'gcra', dcr: 'dcra', acr: 'acra' }[state.randomnessChoice]];
   }
-  if (laneId === 'exposure') return classical ? null : (state.leakage ? 'ltsk' : 'empty');
-  return null;
+  if (laneId === 'exposure') return classical ? [] : [state.leakage ? 'ltsk' : 'empty'];
+  return [];
 }
 
+export const activeNode = (laneId, state) => activeNodes(laneId, state)[0] || null;
+
 function nodeDefinition(id) {
+  if (defs.extendedGoals[id]) return defs.extendedGoals[id].definition;
   const bind = R.nodes[id].bind;
   if (bind.extendedUnforgeability) return defs.extendedGoals[bind.extendedUnforgeability].definition;
   if (bind.classicalModel) return defs.classicalModels[bind.classicalModel].definition;
@@ -32,7 +36,10 @@ function nodeDefinition(id) {
   return '';
 }
 
-const edgeText = (from, to) => R.edges.find((e) => e.from === from && e.to === to) || { impl: '', sep: '' };
+const edgeText = (from, to) => R.edges.find((e) => e.from === from && e.to === to)
+  || (R.goalImplications.some((e) => e.from === from && e.to === to)
+    ? { impl: R.selection.setRule, sep: R.selection.noStrongerNote }
+    : { impl: '', sep: '' });
 
 const EMPTY_SET = '<svg class="rg-emptyset" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="7"/><line x1="4.6" y1="15.4" x2="15.4" y2="4.6"/></svg>';
 
@@ -51,8 +58,12 @@ function nodeHtml(id, status) {
   </button>`;
 }
 
-function gapHtml(from, to, implLive, sepLive) {
+function gapHtml(from, to, implLive, sepLive, equal = false) {
   const e = edgeText(from, to);
+  if (equal) return `<div class="rg-gap" data-from="${from}" data-to="${to}">
+    <span class="rg-link is-equiv is-live" tabindex="0" role="img"
+      aria-label="${escapeAttr(R.legend.equivalence)}" data-tip="${escapeAttr(R.legendTips.equivalence)}"><i class="rg-equiv-back"></i></span>
+  </div>`;
   return `<div class="rg-gap" data-from="${from}" data-to="${to}">
     <span class="rg-link is-impl ${implLive ? 'is-live' : ''}" tabindex="0" role="img"
       aria-label="${escapeAttr(R.legend.implication)}" data-tip="${escapeAttr(e.impl)}"></span>
@@ -61,40 +72,43 @@ function gapHtml(from, to, implLive, sepLive) {
   </div>`;
 }
 
-function laneHtml(lane, state, wrapperTip) {
-  const active = activeNode(lane.id, state);
-  const idx = lane.nodes.indexOf(active);
-  const inactive = active === null;
-  const lift = R.wrapperLifts.find((w) => w.lane === lane.id);
+function laneHtml(lane, state) {
+  const active = activeNodes(lane.id, state).filter((id) => lane.nodes.includes(id));
+  const indices = active.map((id) => lane.nodes.indexOf(id));
+  const inactive = active.length === 0;
+  const emptySigning = state.framework === 'classical'
+    ? state.classicalModel === 'koa'
+    : state.messageChoice === 'ko' && state.randomnessChoice === 'ko';
 
   const row = [];
   lane.nodes.forEach((id, j) => {
     let status = 'is-stronger';
-    if (j === idx) status = 'is-selected';
-    else if (idx >= 0 && j > idx) status = 'is-implied';
+    if (active.includes(id)) status = 'is-selected';
+    else if (indices.some((idx) => j > idx)) status = 'is-implied';
     row.push(nodeHtml(id, status));
     if (j < lane.nodes.length - 1) {
-      row.push(gapHtml(lane.nodes[j], lane.nodes[j + 1], idx >= 0 && j >= idx, idx >= 0 && j + 1 === idx));
+
+      const nr = state.framework !== 'classical' && state.extendedNR;
+      const goalEqual = lane.id === 'goal' && (j === 0 || (j === 1 && !nr));
+      const equal = emptySigning && (goalEqual || lane.id === 'exposure');
+      row.push(gapHtml(
+        lane.nodes[j], lane.nodes[j + 1],
+        indices.some((idx) => j >= idx), indices.some((idx) => j + 1 === idx), equal
+      ));
     }
   });
 
-  const note = inactive ? `<span class="rg-lane-note">${escapeHtml(INACTIVE_NOTE[lane.id] || '')}</span>` : '';
-  const bar = lift ? `<div class="rg-wrap-bar" tabindex="0" role="img"
-      aria-label="${escapeAttr(R.legend.wrapper)}" data-tip="${escapeAttr(wrapperTip)}">
-      <span class="rg-wrap-label">${escapeHtml(lift.label)}</span>
-    </div>` : '';
-
   return `<section class="rg-lane ${inactive ? 'is-inactive' : ''}" data-lane="${lane.id}">
-    <header class="rg-lane-head"><h3 class="rg-lane-title">${escapeHtml(lane.title)}</h3>${note}</header>
-    ${bar}
+    <header class="rg-lane-head"><h3 class="rg-lane-title">${escapeHtml(lane.title)}</h3></header>
     <div class="rg-row">${row.join('')}</div>
   </section>`;
 }
 
 export function renderChains(target, state) {
-  const closure = R.theorems.find((t) => t.id === 'thm:wrappers-closure');
-  const wrapperTip = closure ? [closure.statement, closure.note].filter(Boolean).join(' ') : '';
-  target.innerHTML = `<div class="rg">${R.lanes.map((lane) => laneHtml(lane, state, wrapperTip)).join('')}</div>`;
+  const lanes = state.framework === 'classical'
+    ? R.lanes.filter((lane) => CLASSICAL_LANES.includes(lane.id))
+    : R.lanes.concat(R.goalLanes || []);
+  target.innerHTML = `<div class="rg">${lanes.map((lane) => laneHtml(lane, state)).join('')}</div>`;
 }
 
 export function bindHighlight(root) {

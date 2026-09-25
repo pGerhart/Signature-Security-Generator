@@ -100,4 +100,3 @@ leakage:
   tex: 'L_{\mathsf{tsk}}^{m,\sigma}'
   definition: 'Key exposure is a form of key leakage that assumes full leakage of the temporary key $\mathsf{tsk}$ during the computation of $\mathsf{DetComp}$.'
   figureDetail: 'The adversary may query an arbitrary leakage function on the temporary signing key.'
-  figureDetailUke: 'The adversary gets access to temporary key material.'

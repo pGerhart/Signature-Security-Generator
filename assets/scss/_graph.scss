@@ -30,8 +30,13 @@
 .legend-glyph.is-impl::after { border-left-color: var(--edge-impl); }
 .legend-glyph.is-sep { background: repeating-linear-gradient(90deg, var(--edge-sep) 0 6px, transparent 6px 11px); }
 .legend-glyph.is-sep::after { border-left-color: var(--edge-sep); }
-.legend-glyph.is-wrap { background: repeating-linear-gradient(90deg, var(--edge-wrap) 0 2px, transparent 2px 6px); }
-.legend-glyph.is-wrap::after { border-left-color: var(--edge-wrap); }
+.legend-glyph.is-equiv { background: var(--edge-impl); }
+.legend-glyph.is-equiv::before,
+.legend-glyph.is-equiv::after { content: ''; position: absolute; top: 50%; translate: 0 -50%; border: 5px solid transparent; }
+.legend-glyph.is-equiv::before { left: -1px; border-right-color: var(--edge-impl); border-left: 0; }
+.legend-glyph.is-equiv::after { right: -1px; border-left-color: var(--edge-impl); border-right: 0; }
+.legend-glyph.is-compiler { background: repeating-linear-gradient(90deg, var(--edge-compiler) 0 3px, transparent 3px 6px); }
+.legend-glyph.is-compiler::after { border-left-color: var(--edge-compiler); }
 
 .graph-holder { position: relative; }
 
@@ -80,6 +85,31 @@
   overflow-x: auto;
 }
 
+.graph-holder.is-fullscreen {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  display: flex;
+  flex-direction: column;
+  gap: .9rem;
+  padding: clamp(.7rem, 2vw, 1.2rem);
+  background: var(--bg);
+}
+.graph-holder.is-fullscreen .graph-toolbar { margin-bottom: 0; }
+.graph-holder.is-fullscreen .graph-stage.is-network {
+  flex: 1 1 auto;
+  height: auto;
+  min-height: 0;
+}
+.graph-holder.is-fullscreen .graph-stage.is-chains {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+}
+.graph-holder.is-fullscreen .graph-zoom { right: clamp(1.3rem, 2.6vw, 1.8rem); bottom: clamp(1.3rem, 2.6vw, 1.8rem); }
+
+body.is-graph-fullscreen { overflow: hidden; }
+
 .rel-path {
   display: flex;
   flex-wrap: wrap;
@@ -126,7 +156,9 @@
 .rel-step-label { font-weight: 650; color: var(--ink); }
 .is-impl .rel-step { border-left-color: var(--edge-impl); }
 .is-sep .rel-step { border-left-color: var(--edge-sep); }
-.is-wrap .rel-step { border-left-color: var(--edge-wrap); }
+.is-equiv .rel-step { border-left-color: var(--edge-impl); border-right: 3px solid var(--edge-impl); }
+.is-compiler .rel-step { border-left-color: var(--edge-compiler); border-left-style: dotted; }
+.rel-compilers { border-left: 3px dotted var(--edge-compiler); padding-left: .8rem; margin-top: 1rem; }
 
 .rg { display: grid; gap: .7rem; min-width: 40rem; }
 
@@ -146,39 +178,6 @@
   text-transform: uppercase;
   color: var(--ink-3);
 }
-.rg-lane-note { font-size: .72rem; color: var(--ink-3); }
-
-.rg-wrap-bar { position: relative; height: 1.15rem; margin: 0 .2rem; cursor: help; }
-.rg-wrap-bar::before {
-  content: '';
-  position: absolute;
-  left: 14px;
-  right: 6px;
-  top: 50%;
-  border-top: 2px dotted var(--edge-wrap);
-}
-.rg-wrap-bar::after {
-  content: '';
-  position: absolute;
-  left: 2px;
-  top: 50%;
-  translate: 0 -50%;
-  border: 5px solid transparent;
-  border-right-color: var(--edge-wrap);
-  border-left: 0;
-}
-.rg-wrap-label {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  translate: -50% -50%;
-  background: var(--surface);
-  padding: 0 .4rem;
-  font-size: .68rem;
-  font-weight: 700;
-  color: var(--edge-wrap);
-}
-.rg-lane.is-inactive .rg-wrap-label { background: var(--surface-2); }
 
 .rg-row { display: flex; align-items: stretch; gap: 0; }
 
@@ -245,6 +244,17 @@
 .rg-link.is-impl::after { right: 0; border-left-color: var(--edge-impl); border-right: 0; }
 .rg-link.is-sep::before { left: 8px; right: 2px; border-top: 2px dashed var(--edge-sep); }
 .rg-link.is-sep::after { left: 0; border-right-color: var(--edge-sep); border-left: 0; }
+.rg-link.is-equiv::before { left: 8px; right: 8px; }
+.rg-link.is-equiv::after { right: 0; border-left-color: var(--edge-impl); border-right: 0; }
+.rg-equiv-back {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  translate: 0 -50%;
+  border: 5px solid transparent;
+  border-right-color: var(--edge-impl);
+  border-left: 0;
+}
 
 .rg-cross {
   position: absolute;

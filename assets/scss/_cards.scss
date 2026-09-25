@@ -61,6 +61,7 @@
 .chip-key { font-weight: 700; color: var(--ink); }
 .chip-label { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .chip-goal { border-color: #{'color-mix(in srgb, var(--accent) 40%, var(--line-2))'}; }
+.chip-restriction { border-color: #{'color-mix(in srgb, var(--amber) 55%, var(--line-2))'}; }
 .chip-message { border-color: #{'color-mix(in srgb, var(--violet) 40%, var(--line-2))'}; }
 .chip-randomness { border-color: #{'color-mix(in srgb, var(--teal) 45%, var(--line-2))'}; }
 .chip-exposure { border-color: #{'color-mix(in srgb, var(--amber) 45%, var(--line-2))'}; }

@@ -31,8 +31,11 @@ export function renderNotation(target, state) {
   } else {
     algorithms.push(...notationData.extendedAlgorithms);
     variables.push(...notationData.extendedVariables);
+    const goals = goalsData.extendedGoals.filter((entry) => entry.key !== 'uke');
+    const restrictions = goalsData.extendedGoals.filter((entry) => entry.key === 'uke');
     right = [
-      section(t.extendedGoals, fromVocabulary(goalsData.extendedGoals)),
+      section(t.extendedGoals, fromVocabulary(goals)),
+      section(t.restrictions, fromVocabulary(restrictions)),
       section(t.choices, fromVocabulary(modelsData.messageChoices).concat(fromVocabulary(modelsData.randomnessChoices)), notationData.choiceNote),
       section(t.leakage, notationData.leakageItems.map(row))
     ];

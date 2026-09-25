@@ -4,6 +4,7 @@ sectionTitles:
   classicalGoals: 'Classical Security Goals'
   classicalModels: 'Classical Adversary Models'
   extendedGoals: 'Extended Security Goals'
+  restrictions: 'Restrictions'
   choices: 'Message and Randomness Choices'
   leakage: 'Leakage'
 

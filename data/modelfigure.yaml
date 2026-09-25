@@ -69,7 +69,6 @@ labels:
   randomnessGeneration: 'Randomness Generation'
   messageAttack: 'Message Attacks'
   randomnessAttack: 'Randomness Attacks'
-  keyExposure: 'Key Exposure'
   leakage: 'Leakage'
 
 wires:
@@ -124,7 +123,6 @@ extended:
   noneLabel: 'None'
   randomnessDetail: 'No randomness attack is selected.'
   leakageDetail: 'No key-exposure or leakage component is selected.'
-  leakageLabelUke: 'UKE / leakage active'
   leakageLabel: 'Leakage oracle active'
 
 compilerItems:
@@ -142,5 +140,4 @@ status:
   activePrefix: 'Active selection: '
   messagePart: 'message attacks: '
   randomnessPart: 'randomness attacks: '
-  leakagePartUke: 'key exposure / leakage active'
   leakagePart: 'leakage active'

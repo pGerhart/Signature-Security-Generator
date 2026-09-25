@@ -32,13 +32,17 @@ where $\\mathrm{negl}$ is a negligible function and the probability is taken ove
 }
 
 export function extendedDefinitionLatex(goals, mc, rc, leakage) {
-  const gtxt = joinWithAnd(goals.map((g) => plainGoalLatex(defs.extendedGoals[g])));
+  const securityGoals = goals.filter((g) => g !== 'uke');
+  const gtxt = joinWithAnd(securityGoals.map((g) => plainGoalLatex(defs.extendedGoals[g])));
   const parts = [plainGoalLatex(defs.messageChoices[mc]), plainGoalLatex(defs.randomnessChoices[rc])];
 
   if (leakage) parts.push('leakage function $L_{\\mathsf{tsk}}^{m,\\sigma}$');
-  const noun = goals.length === 1 ? 'security goal' : 'security goals';
+  const noun = securityGoals.length === 1 ? 'security goal' : 'security goals';
+  const restriction = goals.includes('uke')
+    ? ` with the $(\\mathrm{${defs.extendedGoals.uke.acronym}})$ restriction`
+    : '';
   return `\\begin{definition}
-A signature scheme $\\Sigma=(\\mathsf{Gen},\\mathsf{Sign},\\mathsf{Vrfy})$ achieves ${noun} ${gtxt} under an adversary with ${joinWithAnd(parts)} if for all $\\mathsf{PPT}$ adversaries $\\mathcal{A}$ it holds
+A signature scheme $\\Sigma=(\\mathsf{Gen},\\mathsf{Sign},\\mathsf{Vrfy})$ achieves ${noun} ${gtxt}${restriction} under an adversary with ${joinWithAnd(parts)} if for all $\\mathsf{PPT}$ adversaries $\\mathcal{A}$ it holds
 \\[
 ${probabilityLabelExtended(goals, mc, rc, leakage)}
 \\]

@@ -1,3 +1,5 @@
+import { parseOwnership } from './data.js';
+
 const listeners = [];
 
 const DEFAULTS = {
@@ -48,6 +50,8 @@ export function readHash(valid) {
     if (!key) return;
     const value = q.get(key);
     if (isFlag(field)) { state[field] = value === '1'; return; }
+
+    if (field === 'extendedOwnership') { state[field] = parseOwnership(value); return; }
     if (!valid[field] || valid[field].includes(value)) state[field] = value;
   });
 }

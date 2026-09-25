@@ -1,4 +1,4 @@
-import { defs, uniqueGoals } from '../data.js';
+import { defs, uniqueGoals, parseOwnership } from '../data.js';
 import { buildClassicalAdmin, buildClassicalOracle } from './classical.js';
 import { buildExtendedAdmin, buildExtendedOracles } from './extended.js';
 import {
@@ -13,7 +13,8 @@ import {
 
 export function selectedGoals(state) {
   const goals = [state.extendedUnforgeability];
-  if (state.extendedOwnership) goals.push(state.extendedOwnership);
+  const ownership = parseOwnership(state.extendedOwnership);
+  if (ownership) goals.push(ownership);
   if (state.extendedMB) goals.push('mb');
   if (state.extendedNR) goals.push('nr');
   if (state.extendedUKE) goals.push('uke');

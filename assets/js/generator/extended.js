@@ -62,7 +62,6 @@ function learnTargets(goals, ufGoal) {
     );
   }
   if (goals.includes('nr')) xs.push(raw`\mathsf{pk}_{\mathsf{nr}}^*`, raw`\sigma_{\mathsf{nr}}^*`);
-  if (goals.includes('uke')) xs.push(raw`m_{\mathsf{uke}}^*`);
 
   return tupleOrSingle(xs);
 }
@@ -73,6 +72,10 @@ export function buildExtendedAdmin(goals, mc, rc, leakage) {
   const ufGoal = goals.find((g) => UF_GOALS.includes(g)) || null;
   const qExpr = queueExpr(mc, rc);
   const qLExpr = leakQueueExpr(mc, rc, leakage);
+  const uke = (...messages) => {
+    if (!goals.includes('uke') || !messages.length) return raw``;
+    return raw` \wedge ${messages.map((m) => raw`${m}\notin ${qLExpr}`).join(raw` \wedge `)}`;
+  };
 
   L.push(line(sample(raw`(\mathsf{sk},\mathsf{pk})`, raw`\mathsf{Gen}(1^{\lambda})`), 0, 'init'));
 
@@ -105,44 +108,41 @@ export function buildExtendedAdmin(goals, mc, rc, leakage) {
   const target = learnTargets(goals, ufGoal);
   if (target) L.push(line(sample(target, advCall(mc, rc, leakage, extraArgs.join(', '))), 0, 'learn'));
 
-  if (goals.includes('uke')) {
-    L.push(line(ifThen(raw`m_{\mathsf{uke}}^* \in ${qLExpr}`, ret('0')), 0, 'eval'));
-  }
   if (goals.includes('ub')) {
     L.push(line(ifThen(raw`\mathsf{KCheck}(\mathsf{sk}_{\mathsf{ub}}^*,\mathsf{pk})=1`, ret('1')), 0, 'eval'));
   }
   if (ufGoal === 'seuf') {
-    L.push(line(ifThen(raw`(m_{\mathsf{uf}}^*,\sigma_{\mathsf{uf}}^*)\notin ${qExpr} \wedge \mathsf{Vrfy}(\mathsf{pk},m_{\mathsf{uf}}^*,\sigma_{\mathsf{uf}}^*)=1`, ret('1')), 0, 'eval'));
+    L.push(line(ifThen(raw`(m_{\mathsf{uf}}^*,\sigma_{\mathsf{uf}}^*)\notin ${qExpr} \wedge \mathsf{Vrfy}(\mathsf{pk},m_{\mathsf{uf}}^*,\sigma_{\mathsf{uf}}^*)=1${uke(raw`m_{\mathsf{uf}}^*`)}`, ret('1')), 0, 'eval'));
   }
   if (['weuf', 'wsuf', 'ssuf', 'uuf'].includes(ufGoal)) {
-    L.push(line(ifThen(raw`m_{\mathsf{uf}}^*\notin ${qExpr} \wedge \mathsf{Vrfy}(\mathsf{pk},m_{\mathsf{uf}}^*,\sigma_{\mathsf{uf}}^*)=1`, ret('1')), 0, 'eval'));
+    L.push(line(ifThen(raw`m_{\mathsf{uf}}^*\notin ${qExpr} \wedge \mathsf{Vrfy}(\mathsf{pk},m_{\mathsf{uf}}^*,\sigma_{\mathsf{uf}}^*)=1${uke(raw`m_{\mathsf{uf}}^*`)}`, ret('1')), 0, 'eval'));
   }
   if (goals.includes('sdeo')) {
-    L.push(line(ifThen(raw`\mathsf{pk}_{\mathsf{eo}}^* \neq \mathsf{pk} \wedge \sigma_{\mathsf{eo}}^* \in ${qExpr} \wedge (m_{\mathsf{eo}}^*,\sigma_{\mathsf{eo}}^*)\notin ${qExpr} \wedge \mathsf{Vrfy}(\mathsf{pk}_{\mathsf{eo}}^*,m_{\mathsf{eo}}^*,\sigma_{\mathsf{eo}}^*)=1`, ret('1')), 0, 'eval'));
+    L.push(line(ifThen(raw`\mathsf{pk}_{\mathsf{eo}}^* \neq \mathsf{pk} \wedge \sigma_{\mathsf{eo}}^* \in ${qExpr} \wedge (m_{\mathsf{eo}}^*,\sigma_{\mathsf{eo}}^*)\notin ${qExpr} \wedge \mathsf{Vrfy}(\mathsf{pk}_{\mathsf{eo}}^*,m_{\mathsf{eo}}^*,\sigma_{\mathsf{eo}}^*)=1${uke(raw`m_{\mathsf{eo}}^*`)}`, ret('1')), 0, 'eval'));
   }
   if (goals.includes('wdeo')) {
-    L.push(line(ifThen(raw`\mathsf{pk}_{\mathsf{eo}}^* \neq \mathsf{pk} \wedge \sigma_{\mathsf{eo}}^* \in ${qExpr} \wedge (m_{\mathsf{eo}}^*,\sigma_{\mathsf{eo}}^*)\notin ${qExpr} \wedge \mathsf{Vrfy}(\mathsf{pk}_{\mathsf{eo}}^*,m_{\mathsf{eo}}^*,\sigma_{\mathsf{eo}}^*)=1 \wedge \mathsf{KCheck}(\mathsf{sk}_{\mathsf{eo}}^*,\mathsf{pk}_{\mathsf{eo}}^*)=1`, ret('1')), 0, 'eval'));
+    L.push(line(ifThen(raw`\mathsf{pk}_{\mathsf{eo}}^* \neq \mathsf{pk} \wedge \sigma_{\mathsf{eo}}^* \in ${qExpr} \wedge (m_{\mathsf{eo}}^*,\sigma_{\mathsf{eo}}^*)\notin ${qExpr} \wedge \mathsf{Vrfy}(\mathsf{pk}_{\mathsf{eo}}^*,m_{\mathsf{eo}}^*,\sigma_{\mathsf{eo}}^*)=1 \wedge \mathsf{KCheck}(\mathsf{sk}_{\mathsf{eo}}^*,\mathsf{pk}_{\mathsf{eo}}^*)=1${uke(raw`m_{\mathsf{eo}}^*`)}`, ret('1')), 0, 'eval'));
   }
   if (goals.includes('sceo')) {
-    L.push(line(ifThen(raw`\mathsf{pk}_{\mathsf{eo}}^* \neq \mathsf{pk} \wedge (m_{\mathsf{eo}}^*,\sigma_{\mathsf{eo}}^*)\in ${qExpr} \wedge \mathsf{Vrfy}(\mathsf{pk}_{\mathsf{eo}}^*,m_{\mathsf{eo}}^*,\sigma_{\mathsf{eo}}^*)=1`, ret('1')), 0, 'eval'));
+    L.push(line(ifThen(raw`\mathsf{pk}_{\mathsf{eo}}^* \neq \mathsf{pk} \wedge (m_{\mathsf{eo}}^*,\sigma_{\mathsf{eo}}^*)\in ${qExpr} \wedge \mathsf{Vrfy}(\mathsf{pk}_{\mathsf{eo}}^*,m_{\mathsf{eo}}^*,\sigma_{\mathsf{eo}}^*)=1${uke(raw`m_{\mathsf{eo}}^*`)}`, ret('1')), 0, 'eval'));
   }
   if (goals.includes('wceo')) {
-    L.push(line(ifThen(raw`\mathsf{pk}_{\mathsf{eo}}^* \neq \mathsf{pk} \wedge (m_{\mathsf{eo}}^*,\sigma_{\mathsf{eo}}^*)\in ${qExpr} \wedge \mathsf{Vrfy}(\mathsf{pk}_{\mathsf{eo}}^*,m_{\mathsf{eo}}^*,\sigma_{\mathsf{eo}}^*)=1 \wedge \mathsf{KCheck}(\mathsf{sk}_{\mathsf{eo}}^*,\mathsf{pk}_{\mathsf{eo}}^*)=1`, ret('1')), 0, 'eval'));
+    L.push(line(ifThen(raw`\mathsf{pk}_{\mathsf{eo}}^* \neq \mathsf{pk} \wedge (m_{\mathsf{eo}}^*,\sigma_{\mathsf{eo}}^*)\in ${qExpr} \wedge \mathsf{Vrfy}(\mathsf{pk}_{\mathsf{eo}}^*,m_{\mathsf{eo}}^*,\sigma_{\mathsf{eo}}^*)=1 \wedge \mathsf{KCheck}(\mathsf{sk}_{\mathsf{eo}}^*,\mathsf{pk}_{\mathsf{eo}}^*)=1${uke(raw`m_{\mathsf{eo}}^*`)}`, ret('1')), 0, 'eval'));
   }
   if (goals.includes('sueo')) {
-    L.push(line(ifThen(raw`\mathsf{pk}_{\mathsf{eo}}^* \neq \mathsf{pk} \wedge \sigma_{\mathsf{eo}}^* \in ${qExpr} \wedge \mathsf{Vrfy}(\mathsf{pk}_{\mathsf{eo}}^*,m_{\mathsf{eo}}^*,\sigma_{\mathsf{eo}}^*)=1`, ret('1')), 0, 'eval'));
+    L.push(line(ifThen(raw`\mathsf{pk}_{\mathsf{eo}}^* \neq \mathsf{pk} \wedge \sigma_{\mathsf{eo}}^* \in ${qExpr} \wedge \mathsf{Vrfy}(\mathsf{pk}_{\mathsf{eo}}^*,m_{\mathsf{eo}}^*,\sigma_{\mathsf{eo}}^*)=1${uke(raw`m_{\mathsf{eo}}^*`)}`, ret('1')), 0, 'eval'));
   }
   if (goals.includes('wueo')) {
-    L.push(line(ifThen(raw`\mathsf{pk}_{\mathsf{eo}}^* \neq \mathsf{pk} \wedge \sigma_{\mathsf{eo}}^* \in ${qExpr} \wedge \mathsf{Vrfy}(\mathsf{pk}_{\mathsf{eo}}^*,m_{\mathsf{eo}}^*,\sigma_{\mathsf{eo}}^*)=1 \wedge \mathsf{KCheck}(\mathsf{sk}_{\mathsf{eo}}^*,\mathsf{pk}_{\mathsf{eo}}^*)=1`, ret('1')), 0, 'eval'));
+    L.push(line(ifThen(raw`\mathsf{pk}_{\mathsf{eo}}^* \neq \mathsf{pk} \wedge \sigma_{\mathsf{eo}}^* \in ${qExpr} \wedge \mathsf{Vrfy}(\mathsf{pk}_{\mathsf{eo}}^*,m_{\mathsf{eo}}^*,\sigma_{\mathsf{eo}}^*)=1 \wedge \mathsf{KCheck}(\mathsf{sk}_{\mathsf{eo}}^*,\mathsf{pk}_{\mathsf{eo}}^*)=1${uke(raw`m_{\mathsf{eo}}^*`)}`, ret('1')), 0, 'eval'));
   }
   if (goals.includes('nr')) {
-    L.push(line(ifThen(raw`\mathsf{pk}_{\mathsf{nr}}^* \neq \mathsf{pk} \wedge \mathsf{Vrfy}(\mathsf{pk}_{\mathsf{nr}}^*,m_{\mathsf{nr}}^*,\sigma_{\mathsf{nr}}^*)=1`, ret('1')), 0, 'eval'));
+    L.push(line(ifThen(raw`\mathsf{pk}_{\mathsf{nr}}^* \neq \mathsf{pk} \wedge \mathsf{Vrfy}(\mathsf{pk}_{\mathsf{nr}}^*,m_{\mathsf{nr}}^*,\sigma_{\mathsf{nr}}^*)=1${uke(raw`m_{\mathsf{nr}}^*`)}`, ret('1')), 0, 'eval'));
   }
   if (goals.includes('mb')) {
-    L.push(line(ifThen(raw`m_{\mathsf{mb},1}^* \neq m_{\mathsf{mb},2}^* \wedge \mathsf{Vrfy}(\mathsf{pk}_{\mathsf{mb}}^*,m_{\mathsf{mb},1}^*,\sigma_{\mathsf{mb}}^*)=1 \wedge \mathsf{Vrfy}(\mathsf{pk}_{\mathsf{mb}}^*,m_{\mathsf{mb},2}^*,\sigma_{\mathsf{mb}}^*)=1`, ret('1')), 0, 'eval'));
+    L.push(line(ifThen(raw`m_{\mathsf{mb},1}^* \neq m_{\mathsf{mb},2}^* \wedge \mathsf{Vrfy}(\mathsf{pk}_{\mathsf{mb}}^*,m_{\mathsf{mb},1}^*,\sigma_{\mathsf{mb}}^*)=1 \wedge \mathsf{Vrfy}(\mathsf{pk}_{\mathsf{mb}}^*,m_{\mathsf{mb},2}^*,\sigma_{\mathsf{mb}}^*)=1${uke(raw`m_{\mathsf{mb},1}^*`, raw`m_{\mathsf{mb},2}^*`)}`, ret('1')), 0, 'eval'));
   }
   if (goals.includes('msueo')) {
-    L.push(line(ifThen(raw`\mathsf{pk}_{\mathsf{ms},1}^* \neq \mathsf{pk}_{\mathsf{ms},2}^* \wedge \mathsf{Vrfy}(\mathsf{pk}_{\mathsf{ms},1}^*,m_{\mathsf{ms},1}^*,\sigma_{\mathsf{ms}}^*)=1 \wedge \mathsf{Vrfy}(\mathsf{pk}_{\mathsf{ms},2}^*,m_{\mathsf{ms},2}^*,\sigma_{\mathsf{ms}}^*)=1`, ret('1')), 0, 'eval'));
+    L.push(line(ifThen(raw`\mathsf{pk}_{\mathsf{ms},1}^* \neq \mathsf{pk}_{\mathsf{ms},2}^* \wedge \mathsf{Vrfy}(\mathsf{pk}_{\mathsf{ms},1}^*,m_{\mathsf{ms},1}^*,\sigma_{\mathsf{ms}}^*)=1 \wedge \mathsf{Vrfy}(\mathsf{pk}_{\mathsf{ms},2}^*,m_{\mathsf{ms},2}^*,\sigma_{\mathsf{ms}}^*)=1${uke(raw`m_{\mathsf{ms},1}^*`, raw`m_{\mathsf{ms},2}^*`)}`, ret('1')), 0, 'eval'));
   }
 
   L.push(line(ret('0'), 0, 'eval'));

@@ -112,9 +112,9 @@ extendedGoals:
   - key: uke
     acronym: UKE
     short: uke
-    label: Key Exposure
+    label: UKE Restriction
     group: additional
-    definition: 'Key exposure is a form of key leakage that assumes full leakage of the temporary key $\mathsf{tsk}$ during the computation of $\mathsf{DetComp}$.'
+    definition: 'The temporary secret key associated with a candidate output by which the adversary wins must not have been leaked. UKE restricts the selected security goals; it is not a security goal on its own.'
   - key: mb
     acronym: MB
     short: mb
@@ -130,6 +130,7 @@ extendedGoals:
 
 extendedUnforgeability: [ub, uuf, wsuf, ssuf, weuf, seuf]
 extendedOwnership: [wdeo, sdeo, wceo, sceo, wueo, sueo, msueo]
+extendedOwnershipNone: {key: '', acronym: '∅', label: 'None'}
 extendedAdditional:
   - key: mb
     control: extendedMb
@@ -139,7 +140,7 @@ extendedAdditional:
     label: Non-Resignability
   - key: uke
     control: extendedUke
-    label: Key Exposure
+    label: UKE Restriction
 
 controls:
   framework: 'Framework'
@@ -147,11 +148,6 @@ controls:
   classicalModel: 'Adversary model'
   extendedUnforgeability: 'Unforgeability goal'
   extendedOwnership: 'Exclusive ownership goal'
-  extendedAdditional: 'Additional goals'
+  extendedAdditional: 'Additional goals and restrictions'
   messageChoice: 'Message choice'
   randomnessChoice: 'Randomness choice'
-
-extendedOwnershipNone:
-  key: ''
-  acronym: 'none'
-  label: 'No exclusive ownership goal'

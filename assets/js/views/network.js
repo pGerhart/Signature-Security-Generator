@@ -1,8 +1,9 @@
 import { relationsData, defs } from '../data.js';
 import {
   idOf, parseId, label, flatLabel, neighbours, cover, separationSuppressed,
-  wrapperLift, isAsymmetry, AXIS_TITLE
+  isAsymmetry, AXIS_TITLE, goalRelationTip, goalDefinitions, isClassical, compilerMoves
 } from '../notions.js';
+import { findTheorem, compilerTip } from './relations.js';
 import { showTooltip, moveTooltip, hideTooltip } from '../tooltip.js';
 
 const R = relationsData;
@@ -27,45 +28,47 @@ const readTokens = () => {
     accentInk: v('--accent-ink'),
     impl: v('--edge-impl'),
     sep: v('--edge-sep'),
-    wrap: v('--edge-wrap')
+    compiler: v('--edge-compiler')
   };
 };
 
-const theorem = (id) => R.theorems.find((t) => t.id === id) || { statement: '', note: '' };
 const withNote = (t) => [t.statement, t.note].filter(Boolean).join(' ');
 
-export function nodeTip(n) {
-  const goal = defs.extendedGoals[n.goal];
+export function nodeTip(n, framework) {
+  const goals = goalDefinitions(n);
   const parts = [
     `${flatLabel(n)}.`,
-    `${AXIS_TITLE.goal}: ${goal.label}.`,
-    `${AXIS_TITLE.message}: ${R.nodes[n.message].label}.`,
-    `${AXIS_TITLE.randomness}: ${R.nodes[n.randomness].label}.`,
-    `${AXIS_TITLE.exposure}: ${R.nodes[n.exposure].label}.`,
-    goal.definition
+    `${AXIS_TITLE.goals}: ${goals.map((g) => g.label).join(', ')}.`,
+    `${AXIS_TITLE.message}: ${R.nodes[n.message].label}.`
   ];
-  return parts.join(' ');
+  if (!isClassical(framework)) {
+    parts.push(`${AXIS_TITLE.randomness}: ${R.nodes[n.randomness].label}.`);
+    parts.push(`${AXIS_TITLE.exposure}: ${R.nodes[n.exposure].label}.`);
+  }
+  return parts.concat(goals.map((g) => g.definition)).join(' ');
 }
 
 function chainEdgeText(c, kind) {
+  if (c.axis === 'goals') return goalRelationTip(c);
   const e = R.edges.find((x) => x.from === c.strong[c.axis] && x.to === c.weak[c.axis]);
   return e ? e[kind] : '';
 }
 
-function buildElements(centreId, open, visited) {
+function buildElements(centreId, open, visitedIds, framework) {
   const present = new Map();
   const add = (n) => present.set(idOf(n), n);
   open.forEach((id) => {
     const n = parseId(id);
     add(n);
-    neighbours(n).forEach(add);
+    neighbours(n, framework).forEach(add);
+    compilerMoves(n, framework).forEach((move) => add(move.notion));
   });
 
   const nodes = [...present.entries()].map(([id, n]) => ({
-    data: { id, label: label(n), tip: nodeTip(n) },
+    data: { id, label: label(n), tip: nodeTip(n, framework) },
     classes: [
       id === centreId ? 'is-centre' : '',
-      visited.includes(id) && id !== centreId ? 'is-visited' : ''
+      visitedIds.includes(id) && id !== centreId ? 'is-visited' : ''
     ].filter(Boolean).join(' ')
   }));
 
@@ -87,20 +90,9 @@ function buildElements(centreId, open, visited) {
             id: `i:${s}>${w}`,
             source: s,
             target: w,
-            tip: sep ? `${impl} ${chainEdgeText(c, 'sep')}` : impl
+            tip: c.equal ? goalRelationTip(c) : (sep ? `${impl} ${chainEdgeText(c, 'sep')}` : impl)
           },
-          classes: sep ? 'impl has-sep' : 'impl'
-        });
-      }
-
-      const forward = wrapperLift(a, b);
-      const backward = wrapperLift(b, a);
-      if (forward || backward) {
-        const src = forward ? ids[i] : ids[j];
-        const dst = forward ? ids[j] : ids[i];
-        edges.push({
-          data: { id: `w:${src}>${dst}`, source: src, target: dst, label: forward || backward, tip: withNote(theorem('thm:wrappers-closure')) },
-          classes: 'wrap'
+          classes: c.equal ? 'equiv' : (sep ? 'impl has-sep' : 'impl')
         });
       }
 
@@ -108,12 +100,30 @@ function buildElements(centreId, open, visited) {
         const src = isAsymmetry(a, b) ? ids[i] : ids[j];
         const dst = isAsymmetry(a, b) ? ids[j] : ids[i];
         edges.push({
-          data: { id: `a:${src}>${dst}`, source: src, target: dst, tip: withNote(theorem('prop:asymmetry')) },
+          data: { id: `a:${src}>${dst}`, source: src, target: dst, tip: withNote(findTheorem('ex:schnorr-kra')) },
           classes: 'sep is-named'
         });
       }
     }
   }
+
+  present.forEach((n, id) => {
+    compilerMoves(n, framework).forEach((move) => {
+      if (move.dir !== 'to') return;
+      const target = idOf(move.notion);
+      if (!present.has(target)) return;
+      edges.push({
+        data: {
+          id: `c:${move.rule.id}:${id}>${target}`,
+          source: id,
+          target,
+          label: move.rule.compiler,
+          tip: compilerTip(move)
+        },
+        classes: 'compiler'
+      });
+    });
+  });
   return [...nodes, ...edges];
 }
 
@@ -135,12 +145,12 @@ function buildStyle() {
         'font-size': 14.5,
         'font-weight': 600,
         'text-wrap': 'wrap',
-        'text-max-width': 158,
+        'text-max-width': 195,
         'text-valign': 'center',
         'text-halign': 'center',
         'line-height': 1.45,
-        width: 182,
-        height: 66,
+        width: 220,
+        height: 78,
         'z-index': 10,
         'transition-property': 'background-color, border-color, opacity, border-width',
         'transition-duration': '140ms'
@@ -179,6 +189,16 @@ function buildStyle() {
     },
     { selector: 'edge.impl', style: { 'line-color': c.impl, 'target-arrow-color': c.impl } },
     {
+      selector: 'edge.equiv',
+      style: {
+        'line-color': c.impl,
+        'target-arrow-color': c.impl,
+        'source-arrow-color': c.impl,
+        'source-arrow-shape': 'triangle',
+        'source-distance-from-node': 4
+      }
+    },
+    {
       selector: 'edge.has-sep',
       style: {
         'source-arrow-shape': 'triangle-cross',
@@ -199,23 +219,22 @@ function buildStyle() {
     },
     { selector: 'edge.is-named', style: { 'line-dash-pattern': [11, 6] } },
     {
-      selector: 'edge.wrap',
+      selector: 'edge.compiler',
       style: {
-        'line-color': c.wrap,
-        'target-arrow-color': c.wrap,
+        'line-color': c.compiler,
+        'target-arrow-color': c.compiler,
+        'target-arrow-shape': 'vee',
         'line-style': 'dotted',
+        width: 2.6,
         label: 'data(label)',
-        color: c.wrap,
-        'font-size': 12,
-        'font-weight': 700,
-        'control-point-step-size': 92,
+        'font-family': 'Inter, system-ui, sans-serif',
+        'font-size': 11,
+        'font-weight': 600,
+        color: c.compiler,
         'text-background-color': c.surface,
         'text-background-opacity': 1,
-        'text-background-padding': 7,
-        'text-background-shape': 'roundrectangle',
-
-        'text-margin-y': -16,
-        'z-index': 15
+        'text-background-padding': 2,
+        'text-rotation': 'autorotate'
       }
     },
     { selector: '.faded', style: { opacity: 0.6 } },
@@ -287,7 +306,8 @@ function highlight(el) {
 const clearHighlight = () => cy && cy.elements().removeClass('faded hot');
 
 export const mounted = () => cy !== null;
-export const trail = () => visited.slice();
+export const trail = () => visited.map((entry, index) => ({ id: entry.id, index }));
+export const trailSnapshot = (index) => visited[index]?.snapshot || null;
 
 export function mount(container, handlers) {
   if (cy || !window.cytoscape) return;
@@ -333,7 +353,7 @@ export function mount(container, handlers) {
   cy.on('tap', (ev) => { if (ev.target === cy) clearHighlight(); });
 }
 
-export function update(notion, refit = false) {
+export function update(notion, framework, refit = false, snapshot = null) {
   if (!cy) return;
 
   const w = host.clientWidth;
@@ -346,9 +366,13 @@ export function update(notion, refit = false) {
   const id = idOf(notion);
   const grew = !expanded.includes(id);
   expanded = expanded.filter((x) => x !== id).concat(id).slice(-EXPANDED_KEPT);
-  if (!visited.includes(id)) visited.push(id);
+  if (!visited.length || visited[visited.length - 1].id !== id) {
+    visited.push({ id, snapshot });
+  } else if (snapshot) {
+    visited[visited.length - 1].snapshot = snapshot;
+  }
 
-  const next = buildElements(id, expanded, visited);
+  const next = buildElements(id, expanded, visited.map((entry) => entry.id), framework);
   const wanted = new Set(next.map((e) => e.data.id));
   const known = new Set(cy.elements().map((e) => e.id()));
   const fresh = known.size === 0;
@@ -404,16 +428,15 @@ export function refit(notion) {
   settle(idOf(notion));
 }
 
-export function truncateTo(id) {
-  const i = visited.indexOf(id);
-  if (i >= 0) visited = visited.slice(0, i + 1);
+export function truncateTo(index) {
+  if (index >= 0 && index < visited.length) visited = visited.slice(0, index + 1);
 }
 
-export function reset(notion) {
+export function reset(notion, framework, snapshot = null) {
   expanded = [];
   visited = [];
   if (cy) cy.elements().remove();
-  update(notion, true);
+  update(notion, framework, true, snapshot);
 }
 
 export function focusHost() {
